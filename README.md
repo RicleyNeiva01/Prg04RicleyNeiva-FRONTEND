@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+🛠️ DeskFlow | Sistema de Suporte Técnico de TI
+O DeskFlow é uma aplicação web desenvolvida com o objetivo de simular um sistema de suporte técnico de TI. A plataforma permite que usuários registrem chamados, acompanhem o andamento dos atendimentos e que técnicos gerenciem e resolvam problemas de forma prática, organizada e eficiente.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este projeto está sendo desenvolvido como parte da disciplina de Programação Web, com foco na construção de uma aplicação completa ao longo do semestre.
 
-## Available Scripts
+## ⚛️ Versão React
 
-In the project directory, you can run:
+Esta versão do projeto foi refatorada utilizando React, com foco em:
 
-### `npm start`
+- Componentização
+- Reutilização de código
+- Navegação com React Router DOM
+- Estrutura SPA (Single Page Application)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Componentes criados
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Navbar
+- Header
+- Footer
+- Funcionalidades
+- Serviços
+- LoginForm
+- Tabela
 
-### `npm test`
+### Páginas
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Home
+- Login
+- Painel
 
-### `npm run build`
+🎯 Objetivo do Projeto
+Desenvolver um sistema web que simule um ambiente real de suporte técnico, aplicando conceitos de:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+HTML5
+CSS3
+JavaScript
+React
+React Router DOM
+Bootstrap 5
+Organização de projeto web
+Boas práticas de desenvolvimento
+Organização de projeto web
+Boas práticas de desenvolvimento
+📁 Estrutura do Projeto
+📂 infrastructure
+Responsável por armazenar os arquivos principais e recursos utilizados em todo o sistema.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+/assets │ ├── css/ │ └── style.css → Arquivo de estilização principal │ ├── fonts/ → Fontes utilizadas no projeto │ ├── images/ │ ├── Favicon.png → Ícone da aba do navegador │ └── outras imagens │ └── js/ → Scripts JavaScript (em desenvolvimento)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+/pages │ ├── dashboard/ → Página principal do sistema ├── chamados/ → Listagem de chamados ├── novo-chamado/ → Abertura de chamado ├── detalhes/ → Visualização de chamado │ └── index.html → Página inicial (entrada/login)
 
-### `npm run eject`
+⚙️ Funcionalidades
+O sistema permitirá que o usuário:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+✅ Criar chamados de suporte técnico
+✅ Informar título, descrição e categoria
+✅ Visualizar todos os chamados
+✅ Acompanhar o status dos chamados:
+Aberto
+Em andamento
+Resolvido
+✅ Atualizar o status do chamado
+✅ Visualizar detalhes do atendimento
+✅ Filtrar chamados por status
+🛠️ Serviços Disponíveis
+O sistema de suporte técnico abrangerá:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+🖥️ Manutenção de computadores
+🌐 Problemas de rede e internet
+💻 Suporte a software
+🔐 Problemas de login e acesso
+🔧 Suporte a hardware
+⚙️ Configuração de sistemas

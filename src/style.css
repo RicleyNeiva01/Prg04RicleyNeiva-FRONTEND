@@ -1,0 +1,287 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Variáveis Globais - Paleta Futurista/Ciano */
+:root {
+    --bg-escuro: #130C3B;        /* Roxo quase preto (fundo) */
+    --bg-secao: #1D164D;         /* Roxo profundo (para cards/articles) */
+    --ciano: #05BBD0;            /* Cor principal (títulos e botões) */
+    --roxo-vibrante: #390F8F;    /* Cor de apoio */
+    --branco: #ffffff;
+    --texto-claro: #E0E0FF;      /* Branco azulado para leitura */
+}
+
+/* Corpo da página */
+body {
+    background-color: var(--bg-escuro);
+    background: linear-gradient(225deg, #130C3B 40%, #087CD1 100%); /* Degradê suave ao fundo */
+    background-attachment: fixed;
+    color: var(--texto-claro);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* Cabeçalho */
+header {
+    margin-bottom: 40px;
+}
+
+/* Título principal - Agora em Branco para destacar bem no escuro */
+h1 {
+    color: var(--branco);
+    font-size: 3rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow:
+        0 0 10px rgba(5,187,208,0.5),
+        0 0 20px rgba(5,187,208,0.3);
+}
+
+/* Subtítulos */
+h2 {
+    color: var(--branco); /* H2 em branco fica muito elegante */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h5 {
+    color: var(--ciano);
+    font-weight: bold;
+}
+
+/*Paragrafos*/
+p {
+    max-width: 600px;
+    margin: 10px auto;
+}
+
+/* Main */
+main {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 5px;
+}
+
+/* Seções */
+section {
+    margin-bottom: 40px;
+}
+
+/* Botão Principal */
+.btn-custom {
+    background-color: var(--ciano);
+    color: var(--bg-escuro); /* Texto escuro no botão claro para ler melhor */
+    padding: 12px 25px;
+    border-radius: 50px; 
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 15px rgba(5, 187, 208, 0.3);
+}
+
+.btn-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px var(--ciano);
+    background-color: var(--branco);
+    color: var(--bg-escuro);
+
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: rgba(29, 22, 77, 0.95) !important;
+    border-bottom: 2px solid var(--ciano);
+    box-shadow: 0 2px 10px rgba(5, 187, 208, 0.2);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: var(--ciano) !important;
+    text-shadow: 0 0 10px rgba(5, 187, 208, 0.4);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--texto-claro) !important;
+    transition: 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--ciano) !important;
+    text-shadow: 0 0 10px rgba(5, 187, 208, 0.4);
+}
+
+/* Navegação */
+nav#menu ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/*Formatação dos itens*/
+nav#menu li {   
+    padding: 10px 15px;
+    margin: 0;
+    transition: background-color 1s;
+    border-radius: 4px;
+}
+
+/* Links normais */
+nav#menu a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+nav#menu a:hover {
+    background-color: var(--branco);
+    color: var(--bg-escuro);
+}
+
+/* Listas */
+main ul {
+    list-style-position: inside;
+    padding: 0;
+}
+    
+/* Seleção de texto */
+::selection {
+    background-color: var(--ciano);
+    color: var(--bg-escuro);
+}
+
+/*lista de cores*/
+.lista-cores {
+    border-left: 4px solid var(--ciano); /* A linha que brilha */
+    padding: 20px;
+    margin: 30px auto;
+    max-width: 450px;
+    background-color: var(--bg-secao); /* Fundo um pouco diferente do body */
+    border-radius: 8px;
+    text-align: left; /* Lista fica melhor alinhada à esquerda */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+/*Passar o mouse por cima*/
+button:hover {
+    color: var(--branco);
+}
+
+/*Caso o input for invalido*/
+input:focus:invalid {
+    border: 2px solid rgb(214, 6, 6);
+}
+
+input {
+    padding: 12px;
+    margin-bottom: 15px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.05);
+    color: var(--branco);
+    transition: 0.3s ease;
+}
+
+input:focus {
+
+    outline: none;
+
+    border: 1px solid var(--ciano);
+
+    box-shadow: 0 0 15px rgba(5,187,208,0.4);
+}
+
+.excluir {
+    background-color: #d90429;
+    color: var(--branco);
+}
+
+form{
+    display: flex;
+    flex-direction:column;
+    gap: 10px; 
+    max-width: 400px;
+    margin: 0  auto;    
+}
+
+label {
+    text-align: left;
+    font-weight: bold;
+}
+
+form button{
+    align-self: center;
+}
+
+
+th {
+    background-color: var(--ciano);
+    color: var(--bg-escuro);
+    padding: 10px;
+}
+
+td .btn {
+    margin: 2px;
+}   
+
+.card {
+    background-color: rgba(29, 22, 77, 0.8) !important;
+    border: 1px solid var(--ciano) !important;
+    color: var(--branco);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: aparecer 3s forwards;
+}
+
+.login-box{
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    color: var(--branco);
+}
+
+@keyframes aparecer {
+
+    to {
+
+        opacity: 1;
+        transform: translateY(0);
+
+    }
+
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 25px rgba(5,187,208,0.3);
+    border-color: var(--branco) !important;
+}
+
+.btn-secondary:hover{
+    transform: scale(1.05);
+    transition: 0.08s;
+    background-color:var(--bg-secao);
+}
+
+.btn-secondary{
+    padding: 12px 25px;
+    border-radius: 50px; 
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
