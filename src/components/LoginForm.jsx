@@ -25,7 +25,9 @@ function LoginForm(){
                             </div>
 
                                 <div className="d-grid gap-2">
-                                <Link to="/painel" className="btn btn-custom">Entrar</Link>
+                                <button type="submit" className="btn btn-custom">
+                                    Entrar
+                            </button>
                                 <Link to="/" className="btn btn-secondary">Voltar</Link>
                             </div>
                         </form>

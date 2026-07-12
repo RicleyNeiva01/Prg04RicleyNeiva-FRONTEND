@@ -1,77 +1,140 @@
-function Tabela() {
+import React from "react";
+
+function Tabela({ dados, aoExcluir, aoEditar }) {
+
     return (
-        <div>
-            <section>
-                <table className="table table-striped table-hover">
+
+        <div className="card shadow-lg">
+
+            <div className="card-header card-header-custom">
+                <h5 className="mb-0">
+                    👥 Lista de Usuários
+                </h5>
+            </div>
+
+            <div className="card-body p-0">
+
+                <table className="table table-custom table-hover align-middle mb-0">
+
                     <thead>
+
                         <tr>
+
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Email</th>
+                            <th>Perfil</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <th className="text-center">Ações</th>
+
                         </tr>
+
                     </thead>
+
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Ricley Neiva</td>
-                            <td>ricley44@gmail.com</td>
-                            <td><span className="badge bg-success">Ativo</span></td>
-                            <td>
-                                <button className="btn btn-custom btn-sm btn-primary">Editar</button>
-                                <button className="btn btn-custom excluir btn-sm">Excluir</button>
-                            </td>
-                        </tr>
 
-                        <tr>
-                            <td>2</td>
-                            <td>Geovana Bastos</td>
-                            <td>geovana22@gmail.com</td>
-                            <td><span className="badge bg-success">Ativo</span></td>
-                            <td>
-                                <button className="btn btn-custom btn-sm btn-primary">Editar</button>
-                                <button className="btn btn-custom excluir btn-sm">Excluir</button>
-                            </td>
-                        </tr>
+                        {dados && dados.length > 0 ? (
 
-                        <tr>
-                            <td>3</td>
-                            <td>Sueli Neiva</td>
-                            <td>suelinei2454@gmail.com</td>
-                            <td><span className="badge bg-success">Ativo</span></td>
-                            <td>
-                                <button className="btn btn-custom btn-sm btn-primary">Editar</button>
-                                <button className="btn btn-custom excluir btn-sm">Excluir</button>
-                            </td>
-                        </tr>
+                            dados.map((usuario) => (
 
-                        <tr>
-                            <td>4</td>
-                            <td>João Cassio</td>
-                            <td>joaobe224@gmail.com</td>
-                            <td><span className="badge bg-success">Ativo</span></td>
-                            <td>
-                                <button className="btn btn-custom btn-sm btn-primary">Editar</button>
-                                <button className="btn btn-custom excluir btn-sm">Excluir</button>
-                            </td>
-                        </tr>
+                                <tr key={usuario.id}>
 
-                        <tr>
-                            <td>5</td>
-                            <td>Antonio Ribeiro</td>
-                            <td>antoniocof21@gmail.com</td>
-                            <td><span className="badge bg-success">Ativo</span></td>
-                            <td>
-                                <button className="btn btn-custom btn-sm btn-primary">Editar</button>
-                                <button className="btn btn-custom excluir btn-sm">Excluir</button>
-                            </td>
-                        </tr>
+                                    <td className="id-custom">
+                                        #{usuario.id}
+                                    </td>
+
+                                    <td>{usuario.nome}</td>
+
+                                    <td>{usuario.email}</td>
+
+                                    <td>
+
+                                        <span
+                                            className={`badge ${usuario.perfil === "ADMIN"
+                                                    ? "badge-admin"
+                                                    : usuario.perfil === "TECNICO"
+                                                        ? "badge-tecnico"
+                                                        : "badge-usuario"
+                                                }`}
+                                        >
+
+                                            {usuario.perfil === "ADMIN"
+                                                ? "Administrador"
+                                                : usuario.perfil === "TECNICO"
+                                                    ? "Técnico"
+                                                    : "Usuário"}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span
+                                            className={`badge ${usuario.ativo
+                                                    ? "badge-ativo"
+                                                    : "badge-inativo"
+                                                }`}
+                                        >
+                                            {usuario.ativo
+                                                ? "Ativo"
+                                                : "Inativo"}
+                                        </span>
+
+                                    </td>
+
+                                    <td className="text-center">
+
+                                        <div className="d-flex justify-content-center gap-2">
+
+                                            <button className="btn btn-editar btn-sm px-3"
+                                            onClick={() => aoEditar(usuario)}
+                                            >
+                                                ✏️ Editar
+                                            </button>
+
+                                            <button className="btn btn-excluir excluir btn-sm px-3"
+                                            onClick={() => aoExcluir(usuario.id)}>
+                                                🗑 Excluir
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            ))
+
+                        ) : (
+
+                            <tr>
+
+                                <td
+                                    colSpan="6"
+                                    className="text-center py-5"
+                                >
+
+                                    <h5>
+                                        Nenhum usuário encontrado.
+                                    </h5>
+
+                                </td>
+
+                            </tr>
+
+                        )}
+
                     </tbody>
+
                 </table>
-            </section>
+
+            </div>
+
         </div>
+
     );
+
 }
 
 export default Tabela;
