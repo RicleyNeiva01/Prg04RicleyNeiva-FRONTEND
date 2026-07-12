@@ -5,7 +5,6 @@
     box-sizing: border-box;
 }
 
-/* Variáveis Globais - Paleta Futurista/Ciano */
 :root {
     --bg-escuro: #130C3B;        /* Roxo quase preto (fundo) */
     --bg-secao: #1D164D;         /* Roxo profundo (para cards/articles) */
@@ -27,12 +26,10 @@ body {
     line-height: 1.6;
 }
 
-/* Cabeçalho */
 header {
     margin-bottom: 40px;
 }
 
-/* Título principal - Agora em Branco para destacar bem no escuro */
 h1 {
     color: var(--branco);
     font-size: 3rem;
@@ -120,7 +117,6 @@ section {
     text-shadow: 0 0 10px rgba(5, 187, 208, 0.4);
 }
 
-/* Navegação */
 nav#menu ul {
     list-style: none;
     padding: 0;
@@ -130,7 +126,6 @@ nav#menu ul {
     gap: 10px;
 }
 
-/*Formatação dos itens*/
 nav#menu li {   
     padding: 10px 15px;
     margin: 0;
@@ -138,7 +133,6 @@ nav#menu li {
     border-radius: 4px;
 }
 
-/* Links normais */
 nav#menu a {
     text-decoration: none;
     display: inline-block;
@@ -149,13 +143,11 @@ nav#menu a:hover {
     color: var(--bg-escuro);
 }
 
-/* Listas */
 main ul {
     list-style-position: inside;
     padding: 0;
 }
     
-/* Seleção de texto */
 ::selection {
     background-color: var(--ciano);
     color: var(--bg-escuro);
@@ -222,22 +214,15 @@ input:focus {
 }
 
 form{
-    display: flex;
+    display:flex;
     flex-direction:column;
-    gap: 10px; 
-    max-width: 400px;
-    margin: 0  auto;    
+    gap:10px;
 }
 
 label {
     text-align: left;
     font-weight: bold;
 }
-
-form button{
-    align-self: center;
-}
-
 
 th {
     background-color: var(--ciano);
@@ -317,6 +302,7 @@ td .btn {
 
 .table-custom tbody tr{
     transition: .25s;
+    background-color: rgba(29, 22, 77, 0.6) !important;
 }
 
 .table-custom tbody tr:hover{
@@ -434,8 +420,41 @@ td .btn {
     width: 100%;
 }
 
-.form-modal .btn{
-    min-width:110px;
+.form-control {
+    background-color: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: var(--branco) !important;
+    border-radius: 10px !important;
+}
+
+.form-control:focus {
+    background-color: rgba(255,255,255,0.08) !important;
+    border-color: var(--ciano) !important;
+    box-shadow: 0 0 15px rgba(5,187,208,0.4) !important;
+    color: var(--branco) !important;
+}
+
+.form-select {
+    background-color: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: var(--branco) !important;
+    border-radius: 10px !important;
+}
+
+.form-select option {
+    background-color: var(--bg-secao);
+    color: var(--branco);
+}
+
+.acoes-formulario{
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.acoes-formulario .btn{
+    width: 140px;
 }
 
 .modal-header-custom{
@@ -466,4 +485,53 @@ td .btn {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+}
+
+.modal-usuario{
+    width: min(620px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    animation: modalConfirmacao .25s ease;
+}
+
+@media (max-width:768px){
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .modal-usuario{
+        width:100%;
+        padding:16px !important;
+        border-radius:12px;
+        max-height:calc(100vh - 20px);
+    }
+
+    .form-modal{
+        gap:8px;
+    }
+
+    .form-modal input,
+    .form-modal select{
+        font-size:16px;
+    }
+
+    .titulo-pagina{
+        font-size:1.3rem;
+    }
+
+    .acoes-formulario{
+    display:flex;
+    gap:10px;
+}
+
+.acoes-formulario .btn{
+    flex:1;
+    max-width:none;
+}
+
 }

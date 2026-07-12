@@ -179,11 +179,11 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
             </div>
 
-            <div className="d-flex justify-content-end gap-3">
+            <div className="acoes-formulario">
 
                 <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-cancelar"
                     onClick={fechar}
                 >
                     Cancelar

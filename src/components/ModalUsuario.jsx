@@ -14,16 +14,17 @@ function ModalUsuario({ mostrar, fechar, aoSalvar, usuario }) {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                zIndex: 9999
+                zIndex: 9999,
+                padding: "20px",
+                overflowY: "auto"
             }}
             onClick={fechar}
         >
 
             <div
+                className="modal-usuario"
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    width: "620px",
-                    maxWidth: "95%",
                     background: "#1D164D",
                     border: "1px solid #05BBD0",
                     borderRadius: "15px",

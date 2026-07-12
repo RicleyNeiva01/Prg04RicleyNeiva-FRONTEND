@@ -183,27 +183,18 @@ function Usuarios() {
 
             <main className="container py-5 flex-grow-1">
 
-                <div className="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
-
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start mb-4 gap-3">
                     <div>
-
                         <h2 className="titulo-pagina">
                             👥 Gerenciamento de Usuários
                         </h2>
-
                         <p className="subtitulo-pagina mb-0">
-                            Cadastre, edite e gerencie os usuários.
+                            Cadastre, edite e gerencie os usuários do sistema DeskFlow.
                         </p>
-
                     </div>
-
-                    <button
-                        className="btn btn-custom"
-                        onClick={() => setMostrarFormulario(true)}
-                    >
+                    <button className="btn btn-custom shadow fw-bold px-4" onClick={() => setMostrarFormulario(true)}>
                         ➕ Cadastrar Usuário
                     </button>
-
                 </div>
                 <div className="d-flex gap-2 mb-4">
 
