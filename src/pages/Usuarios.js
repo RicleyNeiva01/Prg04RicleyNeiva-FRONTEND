@@ -50,16 +50,33 @@ function Usuarios() {
 
                 carregarUsuarios();
                 return;
-
             }
 
             const response = await buscarUsuarioPorNome(nomeBusca);
 
             setUsuarios(response.data.content);
 
+            if (response.data.content.length === 0) {
+
+                mostrarMensagem(
+                    "Nenhum usuário encontrado.",
+                    "warning"
+                );
+
+            }
+
         } catch (error) {
 
             console.error(error);
+
+            const mensagem =
+                error.response?.data?.message ||
+                "Erro ao pesquisar usuários.";
+
+            mostrarMensagem(
+                mensagem,
+                "danger"
+            );
 
         }
 
@@ -116,15 +133,19 @@ function Usuarios() {
             }
 
             setMostrarFormulario(false);
-
             setUsuarioEditando(null);
-
             carregarUsuarios();
 
         } catch (error) {
 
             console.error(error);
-            mostrarMensagem("Erro ao salvar usuário!", "danger");
+
+            const mensagem =
+                error.response?.data?.message ||
+                error.response?.data?.erro ||
+                "Erro ao salvar usuário!";
+
+            mostrarMensagem(mensagem, "danger");
         }
 
     }
@@ -152,12 +173,11 @@ function Usuarios() {
 
         } catch (error) {
 
-            console.error(error);
-
-            mostrarMensagem(
-                "Erro ao excluir usuário!",
-                "danger"
-            );
+            if (error.response?.status === 400) {
+            mostrarMensagem("Usuário já está inativo!", "warning");
+        } else {
+            mostrarMensagem("Erro ao excluir usuário!", "danger");
+        }
 
         }
 
