@@ -312,6 +312,11 @@ td .btn {
     border-color: rgba(255,255,255,.08);
 }
 
+.table-custom tbody tr td {
+    background-color: transparent !important;
+    color: var(--texto-claro) !important;
+}
+
 .id-custom{
     color: var(--ciano);
     font-weight: bold;
@@ -570,3 +575,52 @@ td .btn {
     transform: translateY(-50%) scale(1.1);
 }
 
+::placeholder {
+    color: rgba(224, 224, 255, 0.4) !important;
+    opacity: 1;
+}
+.pagination-deskflow {
+    gap: 10px; /* Adiciona um espaço elegante entre os botões */
+}
+/* Removemos o estilo grudado padrão do Bootstrap e aplicamos pílulas */
+.pagination-deskflow .page-item:first-child .page-link,
+.pagination-deskflow .page-item:last-child .page-link,
+.pagination-deskflow .page-link {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--ciano);
+    border-radius: 50px; 
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: 0.3s ease;
+    box-shadow: none;
+}
+/* Efeito Hover brilhante usando a sua variável e o seu padrão de box-shadow */
+.pagination-deskflow .page-item:not(.disabled) .page-link:hover {
+    background-color: var(--ciano);
+    color: var(--bg-escuro, #1a1a2e); /* Ajusta a cor do texto para o fundo escuro */
+    border-color: var(--ciano);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(5, 187, 208, 0.4);
+    z-index: 2;
+}
+/* Texto central da paginação (Página X de Y) */
+.pagination-deskflow .page-item .page-link-text {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--texto-claro) !important;
+    cursor: default;
+    padding: 8px 15px;
+}
+
+.pagination-deskflow .page-item .page-link-text:hover {
+    transform: none;
+    box-shadow: none;
+}
+/* Estado desativado (quando estiver na primeira ou última página) */
+.pagination-deskflow .page-item.disabled .page-link {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.3);
+    pointer-events: none; /* Impede o clique e o hover */
+}

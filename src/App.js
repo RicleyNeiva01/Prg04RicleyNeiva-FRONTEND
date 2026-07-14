@@ -8,6 +8,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Painel from './pages/Painel'; 
 import Usuarios from './pages/Usuarios';
+import Categorias from "./pages/Categorias";
+import Tecnicos from "./pages/Tecnicos";
 
 function App() {
     return (
@@ -22,6 +24,10 @@ function App() {
                <Route path="/painel" element={<Painel />} />
 
                <Route path="/usuarios" element={<Usuarios />} />
+
+               <Route path="/categorias" element={<Categorias />} />
+
+               <Route path="/tecnicos" element={<Tecnicos />} />
 
             </Routes>
 

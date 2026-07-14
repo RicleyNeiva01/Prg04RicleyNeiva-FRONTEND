@@ -3,7 +3,8 @@ function ModalConfirmacao({
     fechar,
     aoConfirmar,
     titulo,
-    mensagem
+    mensagem,
+    observacao
 }) {
 
     if (!mostrar) return null;
@@ -61,7 +62,7 @@ function ModalConfirmacao({
                             color: "#BFC7D5"
                         }}
                     >
-                        Esta ação irá desativar o usuário e ele não aparecerá mais na listagem.
+                        {observacao}
                     </small>
 
                 </div>

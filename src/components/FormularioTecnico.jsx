@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function FormularioUsuario({ fechar, aoSalvar, usuario }) {
+function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
 
     const [dadosFormulario, setDadosFormulario] = useState({
 
@@ -9,7 +9,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
         telefone: "",
         email: "",
         senha: "",
-        perfil: "USUARIO_COMUM"
+        especialidade: ""
 
     });
 
@@ -19,16 +19,27 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
     useEffect(() => {
 
-        if (usuario) {
+        if (tecnico) {
 
             setDadosFormulario({
-                ...usuario,
+                ...tecnico,
                 senha: ""
+            });
+
+        } else {
+
+            setDadosFormulario({
+                nome: "",
+                cpf: "",
+                telefone: "",
+                email: "",
+                senha: "",
+                especialidade: ""
             });
 
         }
 
-    }, [usuario]);
+    }, [tecnico]);
 
     function aplicarMascaraCPF(valor) {
 
@@ -117,7 +128,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
         }
 
         // Senha
-        if (!usuario) {
+        if (!tecnico) {
             if (!dadosFormulario.senha.trim()) {
                 novosErros.senha = "A senha é obrigatória.";
             } else if (dadosFormulario.senha.length < 6) {
@@ -125,6 +136,11 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
             }
 
+        }
+
+        // Especialidade
+        if (!dadosFormulario.especialidade.trim()) {
+            novosErros.especialidade = "A especialidade é obrigatória.";
         }
         setErros(novosErros);
 
@@ -140,14 +156,14 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
             return;
 
         }
-        const usuarioEnviar = { ...dadosFormulario };
+        const tecnicoEnviar = { ...dadosFormulario };
 
-        usuarioEnviar.cpf = usuarioEnviar.cpf.replace(/\D/g, "");
-        usuarioEnviar.telefone = usuarioEnviar.telefone.replace(/\D/g, "");
-        if (usuarioEnviar.senha.trim() === "") {
-            delete usuarioEnviar.senha;
+        tecnicoEnviar.cpf = tecnicoEnviar.cpf.replace(/\D/g, "");
+        tecnicoEnviar.telefone = tecnicoEnviar.telefone.replace(/\D/g, "");
+        if (tecnicoEnviar.senha.trim() === "") {
+            delete tecnicoEnviar.senha;
         }
-        aoSalvar(usuarioEnviar);
+        aoSalvar(tecnicoEnviar);
 
     }
 
@@ -266,7 +282,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                 {erros.senha && (
                     <small className="erro-formulario">{erros.senha}</small>
                 )}
-                {usuario && (
+                {tecnico && (
                     <small className="d-block mt-2" style={{ color: "#AFC4FF", fontSize: "13px" }}>
                         🔒 Deixe a senha em branco para manter a senha atual.
                     </small>
@@ -276,29 +292,23 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
             <div className="mb-4">
 
                 <label className="form-label">
-                    Perfil
+                    Especialidade
                 </label>
 
-                <select
-                    className="form-select"
-                    name="perfil"
-                    value={dadosFormulario.perfil}
+                <input
+                    type="text"
+                    className={`form-control ${erros.especialidade ? "is-invalid" : ""}`}
+                    name="especialidade"
+                    placeholder="Ex.: Hardware, Redes, Softwares, Impressoras..."
+                    value={dadosFormulario.especialidade}
                     onChange={handleChange}
-                >
+                />
 
-                    <option value="USUARIO_COMUM">
-                        Usuário Comum
-                    </option>
-
-                    <option value="TECNICO">
-                        Técnico
-                    </option>
-
-                    <option value="ADMIN">
-                        Administrador
-                    </option>
-
-                </select>
+                {erros.especialidade && (
+                    <small className="erro-formulario">
+                        {erros.especialidade}
+                    </small>
+                )}
 
             </div>
 
@@ -327,4 +337,4 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
 }
 
-export default FormularioUsuario;
+export default FormularioTecnico;

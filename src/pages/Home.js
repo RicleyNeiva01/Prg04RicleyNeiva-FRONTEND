@@ -3,7 +3,7 @@ import Header from '../components/Header';
 import Funcionalidades from '../components/Funcionalidades';
 import Servicos from '../components/Servicos';
 import Footer from '../components/Footer';
-import Menu from '../components/Menu'; 
+import Menu from '../components/Menu';
 import { Link } from 'react-router-dom';
 
 function Home() {
@@ -11,7 +11,7 @@ function Home() {
     return (
         <div>
 
-            <Navbar paginaAtual= "home"/>
+            <Navbar paginaAtual="home" />
             <Header />
 
             <main className="container">
@@ -32,10 +32,25 @@ function Home() {
                     </p>
                 </section>
 
-                <Link to="/usuarios">
-    Usuários
-</Link>
+                <section className="text-center mb-5">
+                    <h2>Área de Testes</h2>
 
+                    <div className="d-flex justify-content-center gap-3 flex-wrap mt-4">
+
+                        <Link to="/usuarios" className="btn btn-custom">
+                            👥 Usuários
+                        </Link>
+
+                        <Link to="/categorias" className="btn btn-custom">
+                            🏷️ Categorias
+                        </Link>
+
+                        <Link to="/tecnicos" className="btn btn-custom">
+                            🔧 Técnicos
+                        </Link>
+
+                    </div>
+                </section>
                 <Funcionalidades />
 
                 <Servicos />
