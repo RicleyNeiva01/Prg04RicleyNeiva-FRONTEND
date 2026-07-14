@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import TabelaCategoria from "../components/TabelaCategoria";
@@ -25,61 +25,43 @@ function Categorias() {
     const [tipoToast, setTipoToast] = useState("success");
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [idExcluir, setIdExcluir] = useState(null);
-
-    // ─── NOVOS ESTADOS PARA PAGINAÇÃO ───
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
 
-    // Busca as categorias respeitando a página atual
-    async function carregarCategorias() {
+    const carregarCategorias = useCallback(async () => {
         try {
             const response = await listarCategorias(paginaAtual);
-            // Armazena a lista vinda de 'content' do Pageable do Spring Boot
             setCategorias(response.data.content || response.data);
-            
             if (response.data.totalPages !== undefined) {
                 setTotalPaginas(response.data.totalPages);
             }
         } catch (error) {
             console.error(error);
         }
-    }
+    }, [paginaAtual]);
 
-    // Busca as categorias por nome com paginação
-    async function pesquisarCategorias(resetarPagina = false) {
+    useEffect(() => {
+        carregarCategorias();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paginaAtual]);
+
+    async function handlePesquisar() {
+        if (nomeBusca.trim() === "") {
+            setPaginaAtual(0);
+            carregarCategorias();
+            return;
+        }
         try {
-            const paginaParaBuscar = resetarPagina ? 0 : paginaAtual;
-            if (resetarPagina) {
-                setPaginaAtual(0); // Reseta a paginação para a primeira página na nova busca
-            }
-
-            if (nomeBusca.trim() === "") {
-                carregarCategorias();
-                return;
-            }
-
-            const response = await buscarCategoriaPorNome(nomeBusca, paginaParaBuscar);
+            const response = await buscarCategoriaPorNome(nomeBusca, 0);
             setCategorias(response.data.content || response.data);
-
             if (response.data.totalPages !== undefined) {
                 setTotalPaginas(response.data.totalPages);
             }
-
             if ((response.data.content || response.data).length === 0) {
                 mostrarMensagem("Nenhuma categoria encontrada.", "warning");
             }
-
         } catch (error) {
-            console.error(error);
-            const mensagem = error.response?.data?.message || "Erro ao pesquisar categorias.";
-            mostrarMensagem(mensagem, "danger");
-        }
-    }
-
-    function handleEnter(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            pesquisarCategorias(true); // Reseta para a primeira página
+            mostrarMensagem("Erro ao pesquisar categorias.", "danger");
         }
     }
 
@@ -90,15 +72,6 @@ function Categorias() {
         setTimeout(() => setMostrarToast(false), 3000);
     }
 
-    // Monitora a troca de páginas para recarregar os dados
-    useEffect(() => {
-        if (nomeBusca.trim() === "") {
-            carregarCategorias();
-        } else {
-            pesquisarCategorias(false); // Mantém a página se estiver paginando no resultado da busca
-        }
-    }, [paginaAtual]);
-
     async function handleSalvarCategoria(categoria) {
         try {
             if (categoria.id) {
@@ -108,11 +81,9 @@ function Categorias() {
                 await cadastrarCategoria(categoria);
                 mostrarMensagem("Categoria cadastrada com sucesso!", "success");
             }
-
             setMostrarFormulario(false);
             setCategoriaEditando(null);
             carregarCategorias();
-
         } catch (error) {
             console.error(error);
             const mensagem =
@@ -139,7 +110,6 @@ function Categorias() {
                 "Erro ao excluir categoria!";
             mostrarMensagem(mensagem, "danger");
         }
-
         setMostrarConfirmacao(false);
         setIdExcluir(null);
     }
@@ -182,18 +152,12 @@ function Categorias() {
                         className="form-control"
                         placeholder="Pesquisar por nome..."
                         value={nomeBusca}
-                        onChange={(e) => {
-                            setNomeBusca(e.target.value);
-                            if (e.target.value === "") {
-                                setPaginaAtual(0);
-                                setTimeout(() => carregarCategorias(), 100);
-                            }
-                        }}
-                        onKeyDown={handleEnter}
+                        onChange={(e) => setNomeBusca(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
                     />
                     <button
-                        className="btn btn-custom btn-sm px-3"
-                        onClick={() => pesquisarCategorias(true)} // Reseta para a primeira página na busca manual
+                        className="btn btn-custom px-4"
+                        onClick={handlePesquisar}
                     >
                         🔍 Pesquisar
                     </button>
@@ -205,28 +169,25 @@ function Categorias() {
                     aoEditar={handleEditarCategoria}
                 />
 
-                {/* ─── BLOCO DE PAGINAÇÃO ESTILIZADO ─── */}
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
                         <ul className="pagination pagination-deskflow">
                             <li className={`page-item ${paginaAtual === 0 ? "disabled" : ""}`}>
-                                <button 
-                                    className="page-link" 
+                                <button
+                                    className="page-link"
                                     onClick={() => setPaginaAtual(paginaAtual - 1)}
                                 >
                                     Anterior
                                 </button>
                             </li>
-                            
                             <li className="page-item disabled">
                                 <span className="page-link page-link-text">
                                     Página {paginaAtual + 1} de {totalPaginas}
                                 </span>
                             </li>
-
                             <li className={`page-item ${paginaAtual === totalPaginas - 1 ? "disabled" : ""}`}>
-                                <button 
-                                    className="page-link" 
+                                <button
+                                    className="page-link"
                                     onClick={() => setPaginaAtual(paginaAtual + 1)}
                                 >
                                     Próxima
@@ -261,7 +222,6 @@ function Categorias() {
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
                     mensagem="Tem certeza que deseja excluir esta categoria?"
-                    observacao="Esta ação irá desativar a categoria e ela não aparecerá mais na listagem."
                 />
 
             </main>
