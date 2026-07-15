@@ -42,7 +42,7 @@ function Usuarios() {
 
     useEffect(() => {
         carregarUsuarios();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paginaAtual, mostrarInativos]);
 
     async function handlePesquisar() {
@@ -148,10 +148,16 @@ function Usuarios() {
                             className="form-control"
                             placeholder="Pesquisar por nome..."
                             value={nomeBusca}
-                            onChange={(e) => setNomeBusca(e.target.value)}
+                            onChange={(e) => {
+                                setNomeBusca(e.target.value);
+                                if (e.target.value === "") {
+                                    setPaginaAtual(0);
+                                    carregarUsuarios();
+                                }
+                            }}
                             onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
                         />
-                        <button className="btn btn-custom px-4" onClick={handlePesquisar}>
+                        <button className="btn btn-custom px-4 btn-pesquisar-mobile" onClick={handlePesquisar}>
                             🔍 Pesquisar
                         </button>
                     </div>

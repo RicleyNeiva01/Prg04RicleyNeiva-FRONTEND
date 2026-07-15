@@ -42,7 +42,7 @@ function Categorias() {
 
     useEffect(() => {
         carregarCategorias();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paginaAtual]);
 
     async function handlePesquisar() {
@@ -152,11 +152,17 @@ function Categorias() {
                         className="form-control"
                         placeholder="Pesquisar por nome..."
                         value={nomeBusca}
-                        onChange={(e) => setNomeBusca(e.target.value)}
+                        onChange={(e) => {
+                            setNomeBusca(e.target.value);
+                            if (e.target.value === "") {
+                                setPaginaAtual(0);
+                                carregarCategorias();
+                            }
+                        }}
                         onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
                     />
                     <button
-                        className="btn btn-custom px-4"
+                        className="btn btn-custom px-4 btn-pesquisar-mobile"
                         onClick={handlePesquisar}
                     >
                         🔍 Pesquisar

@@ -12,7 +12,7 @@ function TabelaTecnico({ dados, aoExcluir, aoEditar }) {
                 </h5>
             </div>
 
-            <div className="card-body p-0">
+            <div className="card-body p-0 table-responsive">
 
                 <table className="table table-custom table-hover align-middle mb-0">
 

@@ -389,7 +389,7 @@ td .btn {
     transform: scale(1.05);
     background: rgba(255,255,255,.22);
     box-shadow: 0 0 20px rgba(255,255,255,.18);
-    color: white;
+    color: var(--branco);
 }
 
 .titulo-pagina{
@@ -537,6 +537,28 @@ td .btn {
     max-width:none;
 }
 
+/* Botão pesquisar menor no mobile */
+    .btn-pesquisar-mobile {
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+        white-space: nowrap;
+    }
+
+    /* Botões da tabela menores */
+    .btn-editar,
+    .btn-excluir {
+        min-width: 65px !important;
+        padding: 4px 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Fonte menor na tabela */
+    .table-custom td,
+    .table-custom th {
+        font-size: 0.78rem;
+        padding: 8px 6px;
+    }
+
 }
 
 .erro-formulario {
@@ -623,4 +645,44 @@ td .btn {
     border-color: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.3);
     pointer-events: none; /* Impede o clique e o hover */
+}
+
+.badge-aberto {
+    background-color: #0d6efd;
+    color: var(--branco);
+}
+
+.badge-andamento {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-resolvido {
+    background-color: #198754;
+    color: var(--branco);
+}
+
+.badge-baixa {
+    background-color: #20c997;
+    color: var(--branco);
+}
+
+.badge-media {
+    background-color: #0dcaf0;
+    color: var(--branco);
+}
+
+.badge-alta {
+    background-color: #fd7e14;
+    color: var(--branco);
+}
+
+.badge-urgente {
+    background-color: #dc3545;
+    color: var(--branco);
+}
+
+.modal-custom{
+    width: 100%;
+    max-width: 800px;
 }
