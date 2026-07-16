@@ -1,6 +1,12 @@
 import React from "react";
 
-function TabelaChamado({ dados, aoExcluir, aoEditar }) {
+function TabelaChamado({
+    dados,
+    aoExcluir,
+    aoEditar,
+    aoAtribuirTecnico,
+    aoResolver
+}) {
 
     function badgeStatus(status) {
 
@@ -131,8 +137,26 @@ function TabelaChamado({ dados, aoExcluir, aoEditar }) {
                                                 className="btn btn-editar btn-sm px-3"
                                                 onClick={() => aoEditar(chamado)}
                                             >
-                                                ✏️ Editar
+                                                {chamado.status === "RESOLVIDO" ? "👁️ Visualizar" : "✏️ Editar"}
                                             </button>
+
+                                            {chamado.status === "ABERTO" && (
+                                                <button
+                                                    className="btn btn-atribuir btn-sm px-3"
+                                                    onClick={() => aoAtribuirTecnico(chamado)}
+                                                >
+                                                    👨‍🔧 Atribuir
+                                                </button>
+                                            )}
+
+                                            {chamado.status === "EM_ANDAMENTO" && (
+                                                <button
+                                                    className="btn btn-resolver btn-sm px-3"
+                                                    onClick={() => aoResolver(chamado.id)}
+                                                >
+                                                    ✅ Resolver
+                                                </button>
+                                            )}
 
                                             <button
                                                 className="btn btn-excluir btn-sm px-3"

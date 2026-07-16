@@ -5,18 +5,23 @@ import TabelaChamado from "../components/TabelaChamado";
 import ModalChamado from "../components/ModalChamado";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import ModalAtribuirTecnico from "../components/ModalAtribuirTecnico";
 
 import {
     listarChamados,
     cadastrarChamado,
     atualizarChamado,
-    excluirChamado
+    excluirChamado,
+    atualizarStatus,
+    atribuirTecnico
 } from "../services/chamadoService";
 
 function Chamados() {
     const [chamados, setChamados] = useState([]);
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [chamadoEditando, setChamadoEditando] = useState(null);
+    const [mostrarModalTecnico, setMostrarModalTecnico] = useState(false);
+    const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
     const [tituloBusca, setTituloBusca] = useState("");
     const [mostrarToast, setMostrarToast] = useState(false);
     const [mensagemToast, setMensagemToast] = useState("");
@@ -144,6 +149,44 @@ function Chamados() {
         setMostrarFormulario(true);
     }
 
+    function handleAbrirModalTecnico(chamado) {
+        setChamadoSelecionado(chamado);
+        setMostrarModalTecnico(true);
+    }
+
+    async function handleSalvarAtribuicao(chamadoId, tecnicoId) {
+        try {
+            await atribuirTecnico(chamadoId, Number(tecnicoId));
+
+            mostrarMensagem(
+                "Técnico atribuído com sucesso! Status alterado para Em Andamento.",
+                "success"
+            );
+
+            setMostrarModalTecnico(false);
+            setChamadoSelecionado(null);
+
+            await carregarChamados();
+        } catch (error) {
+            const mensagem =
+                error.response?.data?.message ||
+                error.response?.data?.erro ||
+                "Erro ao atribuir técnico!";
+
+            mostrarMensagem(mensagem, "danger");
+        }
+    }
+
+    async function handleResolverChamado(id) {
+        try {
+            await atualizarStatus(id, "RESOLVIDO");
+            mostrarMensagem("Chamado resolvido com sucesso!", "success");
+            await carregarChamados();
+        } catch (error) {
+            mostrarMensagem("Erro ao resolver chamado!", "danger");
+        }
+    }
+
     return (
         <div className="d-flex flex-column min-vh-100">
             <Navbar paginaAtual="chamados" />
@@ -185,10 +228,12 @@ function Chamados() {
                             placeholder="Pesquisar por título..."
                             value={tituloBusca}
                             onChange={(e) => {
-                                setTituloBusca(e.target.value);
+                                const valor = e.target.value;
+                                setTituloBusca(valor);
 
-                                if (e.target.value === "") {
+                                if (valor.trim() === "") {
                                     setPaginaAtual(0);
+                                    carregarChamados();
                                 }
                             }}
                             onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
@@ -199,7 +244,13 @@ function Chamados() {
                     </div>
                 </div>
 
-                <TabelaChamado dados={chamados} aoExcluir={handleExcluirChamado} aoEditar={handleEditarChamado} />
+                <TabelaChamado
+                    dados={chamados}
+                    aoExcluir={handleExcluirChamado}
+                    aoEditar={handleEditarChamado}
+                    aoAtribuirTecnico={handleAbrirModalTecnico}
+                    aoResolver={handleResolverChamado}
+                />
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -234,6 +285,13 @@ function Chamados() {
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
                     mensagem="Tem certeza que deseja excluir este chamado?" />
+
+                <ModalAtribuirTecnico
+                    mostrar={mostrarModalTecnico}
+                    fechar={() => { setMostrarModalTecnico(false); setChamadoSelecionado(null); }}
+                    chamado={chamadoSelecionado}
+                    aoSalvar={handleSalvarAtribuicao}
+                />
             </main>
             <Footer />
         </div>

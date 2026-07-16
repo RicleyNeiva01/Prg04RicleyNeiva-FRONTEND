@@ -10,6 +10,7 @@ import Painel from './pages/Painel';
 import Usuarios from './pages/Usuarios';
 import Categorias from "./pages/Categorias";
 import Tecnicos from "./pages/Tecnicos";
+import Chamados from "./pages/Chamados";
 
 function App() {
     return (
@@ -28,6 +29,8 @@ function App() {
                <Route path="/categorias" element={<Categorias />} />
 
                <Route path="/tecnicos" element={<Tecnicos />} />
+
+               <Route path="/chamados" element={<Chamados />} />
 
             </Routes>
 

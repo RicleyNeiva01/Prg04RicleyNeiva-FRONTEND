@@ -1,38 +1,48 @@
 import { useState, useEffect } from "react";
 
-import { listarUsuarios, listarTecnicos } from "../services/usuarioService";
+import { listarUsuarios } from "../services/usuarioService";
 import { listarCategorias } from "../services/categoriaService";
 
 function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
     const [dadosFormulario, setDadosFormulario] = useState({
+        id: null,
         titulo: "",
         descricao: "",
         prioridade: "MEDIA",
         categoriaId: "",
-        usuarioId: "",
-        tecnicoId: ""
+        usuarioId: ""
     });
 
     const [erros, setErros] = useState({});
 
     const [usuarios, setUsuarios] = useState([]);
     const [categorias, setCategorias] = useState([]);
-    const [tecnicos, setTecnicos] = useState([]);
-
 
     useEffect(() => {
 
         if (chamado) {
 
             setDadosFormulario({
+                id: chamado.id,
                 titulo: chamado.titulo,
                 descricao: chamado.descricao,
                 prioridade: chamado.prioridade,
                 categoriaId: chamado.categoria?.id || "",
-                usuarioId: chamado.usuario?.id || "",
-                tecnicoId: chamado.tecnico?.id || ""
+                usuarioId: chamado.usuario?.id || ""
             });
+
+        } else {
+
+            setDadosFormulario({
+                id: null,
+                titulo: "",
+                descricao: "",
+                prioridade: "MEDIA",
+                categoriaId: "",
+                usuarioId: ""
+            });
+            setErros({});
 
         }
 
@@ -44,16 +54,14 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
     async function carregarDados() {
         try {
-            const [usuariosResponse, categoriasResponse, tecnicosResponse] =
+            const [usuariosResponse, categoriasResponse] =
                 await Promise.all([
                     listarUsuarios(),
-                    listarCategorias(),
-                    listarTecnicos()
+                    listarCategorias()
                 ]);
 
             setUsuarios(usuariosResponse.data.content || usuariosResponse.data);
             setCategorias(categoriasResponse.data.content || categoriasResponse.data);
-            setTecnicos(tecnicosResponse.data.content || tecnicosResponse.data);
 
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
@@ -84,10 +92,15 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
         if (!dadosFormulario.titulo.trim()) {
             novosErros.titulo = "Informe o título.";
+        } else if (dadosFormulario.titulo.trim().length < 5) {
+            novosErros.titulo = "O título deve possuir pelo menos 5 caracteres.";
         }
 
         if (!dadosFormulario.descricao.trim()) {
             novosErros.descricao = "Informe a descrição.";
+        } else if (dadosFormulario.descricao.trim().length < 10) {
+            novosErros.descricao =
+                "A descrição deve possuir pelo menos 10 caracteres.";
         }
 
         if (!dadosFormulario.categoriaId) {
@@ -111,11 +124,11 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
         if (!validarFormulario()) return;
 
         const chamadoEnviar = {
-            ...dadosFormulario
+            ...dadosFormulario,
+            usuarioId: Number(dadosFormulario.usuarioId),
+            categoriaId: Number(dadosFormulario.categoriaId)
         };
-        if (!chamadoEnviar.tecnicoId) {
-            delete chamadoEnviar.tecnicoId;
-        }
+
         aoSalvar(chamadoEnviar);
 
     }
@@ -197,27 +210,6 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 </select>
                 {erros.usuarioId && <small className="erro-formulario">{erros.usuarioId}</small>}
             </div>
-
-            {/* AQUI ESTÁ A MÁGICA: Só mostra o campo de técnico se for MODO EDIÇÃO */}
-            {chamado && (
-                <div className="mb-4 p-3 rounded" style={{ background: "rgba(5, 187, 208, 0.1)", border: "1px dashed #05BBD0" }}>
-                    <label className="form-label text-info">Técnico Responsável</label>
-                    <select
-                        className="form-select"
-                        name="tecnicoId"
-                        value={dadosFormulario.tecnicoId}
-                        onChange={handleChange}
-                    >
-                        <option value="">Nenhum técnico atribuído</option>
-                        {tecnicos.map(tec => (
-                            <option key={tec.id} value={tec.id}>{tec.nome}</option>
-                        ))}
-                    </select>
-                    <small className="d-block mt-2" style={{ color: "#AFC4FF", fontSize: "13px" }}>
-                        📌 Atribuir um técnico mudará automaticamente o status para "Em Andamento".
-                    </small>
-                </div>
-            )}
 
             <div className="acoes-formulario mt-4 d-flex gap-2 justify-content-end">
                 <button type="button" className="btn btn-cancelar" onClick={fechar}>

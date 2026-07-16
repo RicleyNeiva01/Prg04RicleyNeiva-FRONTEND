@@ -37,7 +37,9 @@ export const atualizarStatus = (id, status) => {
 };
 
 export const atribuirTecnico = (id, tecnicoId) => {
-    return axios.patch(`${API_URL}/chamados/${id}/tecnico?tecnicoId=${tecnicoId}`);
+    return axios.patch(
+        `${API_URL}/chamados/${id}/tecnico?tecnicoId=${tecnicoId}`
+    );
 };
 
 export const excluirChamado = (id) => {

@@ -49,6 +49,10 @@ function Home() {
                             🔧 Técnicos
                         </Link>
 
+                        <Link to="/chamados" className="btn btn-custom">
+                            🎫 Gerenciar Chamados
+                        </Link>
+
                     </div>
                 </section>
                 <Funcionalidades />

@@ -1,7 +1,7 @@
 import axios from "axios";
 import API_URL from "./api";
 
-export const listarCategorias = (pagina = 0, tamanho = 5) => {
+export const listarCategorias = (pagina = 0, tamanho = 50) => {
     // O sort=nome,asc avisa o Spring Boot para ordenar de A-Z!
     return axios.get(`${API_URL}/categorias?page=${pagina}&size=${tamanho}&sort=nome,asc`);
 };
