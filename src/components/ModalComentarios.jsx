@@ -46,7 +46,7 @@ function ModalComentarios({
 
             const comentario = {
                 mensagem: mensagem,
-                usuarioId: 1, // TODO: substituir pelo usuário autenticado após implementar o login
+                usuarioId: 1, // TODO: substituir pelo usuario autenticado após implementar o login
                 chamadoId: chamado.id
             };
 
