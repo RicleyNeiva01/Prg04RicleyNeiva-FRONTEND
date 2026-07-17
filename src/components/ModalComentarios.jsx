@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
     listarComentariosPorChamado,
     cadastrarComentario,
@@ -18,23 +18,23 @@ function ModalComentarios({
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [comentarioExcluir, setComentarioExcluir] = useState(null);
 
+    const carregarComentarios = useCallback(async () => {
+        if (!chamado) return;
+
+        try {
+            const response = await listarComentariosPorChamado(chamado.id);
+            setComentarios(response.data.content || response.data);
+        } catch (error) {
+            console.error("Erro ao carregar comentários", error);
+        }
+    }, [chamado]);
+
     useEffect(() => {
         if (mostrar && chamado) {
             setMensagem("");
             carregarComentarios();
         }
-    }, [mostrar, chamado]);
-
-    async function carregarComentarios() {
-        try {
-            const response = await listarComentariosPorChamado(chamado.id);
-
-            setComentarios(response.data.content || response.data);
-
-        } catch (error) {
-            console.error("Erro ao carregar comentários", error);
-        }
-    }
+    }, [mostrar, chamado, carregarComentarios]);
 
     async function handleSalvarComentario() {
 
@@ -201,7 +201,7 @@ function ModalComentarios({
                                 <button
                                     className="btn btn-outline-danger btn-sm rounded-pill"
                                     style={{
-                                        border: 'none', 
+                                        border: 'none',
                                         padding: '5px 10px',
                                         fontSize: '1.1rem', // Aumenta levemente o tamanho do ícone
                                         transition: 'all 0.2s ease', // Animação suave no hover
