@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { listarUsuarios } from "../services/usuarioService";
 import { listarCategorias } from "../services/categoriaService";
+import { FaSave, FaTimes } from "react-icons/fa";
 
 function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
@@ -56,8 +57,8 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
         try {
             const [usuariosResponse, categoriasResponse] =
                 await Promise.all([
-                    listarUsuarios(),
-                    listarCategorias()
+                    listarUsuarios(false, 0, 100),
+                    listarCategorias(0, 100)
                 ]);
 
             setUsuarios(usuariosResponse.data.content || usuariosResponse.data);
@@ -202,21 +203,33 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                     name="usuarioId"
                     value={dadosFormulario.usuarioId}
                     onChange={handleChange}
+                    disabled={!!chamado}
                 >
                     <option value="">Selecione o usuário...</option>
                     {usuarios.map(user => (
-                        <option key={user.id} value={user.id}>{user.nome}</option>
+                        <option key={user.id} value={user.id}>
+                            {user.nome}
+                        </option>
                     ))}
                 </select>
-                {erros.usuarioId && <small className="erro-formulario">{erros.usuarioId}</small>}
+
+                {erros.usuarioId && (
+                    <small className="erro-formulario">{erros.usuarioId}</small>
+                )}
+
+                {chamado && (
+                    <small className="text-warning d-block mt-1">
+                        O solicitante não pode ser alterado após a abertura do chamado.
+                    </small>
+                )}
             </div>
 
             <div className="acoes-formulario mt-4 d-flex gap-2 justify-content-end">
                 <button type="button" className="btn btn-cancelar" onClick={fechar}>
-                    Cancelar
+                    <FaTimes className="me-2" /> Cancelar
                 </button>
                 <button type="submit" className="btn btn-custom">
-                    Salvar
+                    <FaSave className="me-2" /> Salvar
                 </button>
             </div>
         </form>

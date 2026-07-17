@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FaSave, FaTimes } from "react-icons/fa";
 
 function FormularioCategoria({ fechar, aoSalvar, categoria }) {
 
@@ -121,14 +122,14 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
                     className="btn btn-cancelar"
                     onClick={fechar}
                 >
-                    Cancelar
+                    <FaTimes className="me-2" /> Cancelar
                 </button>
 
                 <button
                     type="submit"
                     className="btn btn-custom"
                 >
-                    Salvar
+                    <FaSave className="me-2" /> Salvar
                 </button>
 
             </div>

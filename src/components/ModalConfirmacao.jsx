@@ -1,3 +1,6 @@
+import React from "react";
+import { FaExclamationTriangle, FaTimes, FaTrashAlt } from "react-icons/fa";
+
 function ModalConfirmacao({
     mostrar,
     fechar,
@@ -6,11 +9,9 @@ function ModalConfirmacao({
     mensagem,
     observacao
 }) {
-
     if (!mostrar) return null;
 
     return (
-
         <div
             style={{
                 position: "fixed",
@@ -23,7 +24,6 @@ function ModalConfirmacao({
             }}
             onClick={fechar}
         >
-
             <div
                 className="modal-confirmacao"
                 onClick={(e) => e.stopPropagation()}
@@ -38,16 +38,16 @@ function ModalConfirmacao({
                     boxShadow: "0 15px 45px rgba(0,0,0,.45)"
                 }}
             >
-
-                <h3
-                    className="text-center mb-3"
-                    style={{ color: "#20D6F7" }}
-                >
-                    ⚠ {titulo}
-                </h3>
+                <div className="text-center mb-4">
+                    <FaExclamationTriangle size={45} style={{ color: "#FFC107", marginBottom: "15px" }} />
+                    <h3
+                        style={{ color: "#20D6F7", margin: 0 }}
+                    >
+                        {titulo}
+                    </h3>
+                </div>
 
                 <div className="text-center">
-
                     <p
                         style={{
                             fontSize: "17px",
@@ -64,35 +64,26 @@ function ModalConfirmacao({
                     >
                         {observacao}
                     </small>
-
                 </div>
 
-                <div
-                    className="d-flex justify-content-center gap-3 mt-4"
-                >
-
+                <div className="d-flex justify-content-center gap-3 mt-4">
                     <button
-                        className="btn-cancelar"
+                        className="btn-cancelar d-flex align-items-center px-4"
                         onClick={fechar}
                     >
-                        Cancelar
+                        <FaTimes className="me-2" /> Cancelar
                     </button>
 
                     <button
-                        className="btn-excluir"
+                        className="btn-excluir d-flex align-items-center px-4"
                         onClick={aoConfirmar}
                     >
-                        🗑 Excluir
+                        <FaTrashAlt className="me-2" /> Excluir
                     </button>
-
                 </div>
-
             </div>
-
         </div>
-
     );
-
 }
 
 export default ModalConfirmacao;

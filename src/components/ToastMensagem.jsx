@@ -1,9 +1,10 @@
-function ToastMensagem({ mostrar, mensagem, tipo }) {
+import React from "react";
+import { FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaInfoCircle } from "react-icons/fa";
 
+function ToastMensagem({ mostrar, mensagem, tipo }) {
     if (!mostrar) return null;
 
     return (
-
         <div
             style={{
                 position: "fixed",
@@ -18,35 +19,34 @@ function ToastMensagem({ mostrar, mensagem, tipo }) {
                 fontSize: "15px",
                 boxShadow: "0 8px 25px rgba(0,0,0,.35)",
                 zIndex: 99999,
-                animation: "slideFade .35s ease"
+                animation: "slideFade .35s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px"
             }}
             className={`bg-${tipo}`}
         >
-            {tipo === "success" && "✅ "}
-            {tipo === "danger" && "❌ "}
-            {tipo === "warning" && "⚠️ "}
-            {tipo === "info" && "ℹ️ "}
+            {tipo === "success" && <FaCheckCircle size={20} />}
+            {tipo === "danger" && <FaTimesCircle size={20} />}
+            {tipo === "warning" && <FaExclamationTriangle size={20} />}
+            {tipo === "info" && <FaInfoCircle size={20} />}
 
-            {mensagem}
+            <span>{mensagem}</span>
 
             <style>{`
                 @keyframes slideFade {
-    from {
-        opacity: 0;
-        transform: translateY(-15px) translateX(25px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) translateX(0);
-    }
-}
+                    from {
+                        opacity: 0;
+                        transform: translateY(-15px) translateX(25px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) translateX(0);
+                    }
+                }
             `}</style>
-
         </div>
-
     );
-
 }
 
 export default ToastMensagem;

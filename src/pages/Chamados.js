@@ -6,6 +6,7 @@ import ModalChamado from "../components/ModalChamado";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import ModalAtribuirTecnico from "../components/ModalAtribuirTecnico";
+import ModalComentarios from "../components/ModalComentarios";
 
 import {
     listarChamados,
@@ -22,6 +23,8 @@ function Chamados() {
     const [chamadoEditando, setChamadoEditando] = useState(null);
     const [mostrarModalTecnico, setMostrarModalTecnico] = useState(false);
     const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
+    const [mostrarComentarios, setMostrarComentarios] = useState(false);
+    const [chamadoComentario, setChamadoComentario] = useState(null);
     const [tituloBusca, setTituloBusca] = useState("");
     const [mostrarToast, setMostrarToast] = useState(false);
     const [mensagemToast, setMensagemToast] = useState("");
@@ -154,6 +157,11 @@ function Chamados() {
         setMostrarModalTecnico(true);
     }
 
+    function handleAbrirComentarios(chamado) {
+        setChamadoComentario(chamado);
+        setMostrarComentarios(true);
+    }
+
     async function handleSalvarAtribuicao(chamadoId, tecnicoId) {
         try {
             await atribuirTecnico(chamadoId, Number(tecnicoId));
@@ -249,6 +257,7 @@ function Chamados() {
                     aoExcluir={handleExcluirChamado}
                     aoEditar={handleEditarChamado}
                     aoAtribuirTecnico={handleAbrirModalTecnico}
+                    aoComentarios={handleAbrirComentarios}
                     aoResolver={handleResolverChamado}
                 />
 
@@ -291,6 +300,16 @@ function Chamados() {
                     fechar={() => { setMostrarModalTecnico(false); setChamadoSelecionado(null); }}
                     chamado={chamadoSelecionado}
                     aoSalvar={handleSalvarAtribuicao}
+                />
+
+                <ModalComentarios
+                    mostrar={mostrarComentarios}
+                    fechar={() => {
+                        setMostrarComentarios(false);
+                        setChamadoComentario(null);
+                    }}
+                    chamado={chamadoComentario}
+                    mostrarMensagem={mostrarMensagem}
                 />
             </main>
             <Footer />

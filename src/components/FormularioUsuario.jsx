@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FaSave, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 
 function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
@@ -260,7 +261,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                         className="btn-mostrar-senha"
                         onClick={() => setMostrarSenha(!mostrarSenha)}
                     >
-                        {mostrarSenha ? "🙈" : "👁️"}
+                        {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
                 {erros.senha && (
@@ -309,14 +310,14 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                     className="btn btn-cancelar"
                     onClick={fechar}
                 >
-                    Cancelar
+                    <FaTimes className="me-2" /> Cancelar
                 </button>
 
                 <button
                     type="submit"
                     className="btn btn-custom"
                 >
-                    Salvar
+                    <FaSave className="me-2" /> Salvar
                 </button>
 
             </div>

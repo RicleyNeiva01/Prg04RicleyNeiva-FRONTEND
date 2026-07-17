@@ -155,7 +155,7 @@ function Usuarios() {
                                     carregarUsuarios();
                                 }
                             }}
-                            onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
+                            onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}   
                         />
                         <button className="btn btn-custom px-4 btn-pesquisar-mobile" onClick={handlePesquisar}>
                             🔍 Pesquisar

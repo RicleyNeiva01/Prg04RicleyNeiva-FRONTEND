@@ -686,19 +686,21 @@ td .btn {
 }
 
 .btn-atribuir {
-    background: rgba(57, 15, 143, 0.4);
-    border: 1px solid #7b2fff;
-    color: #b47fff;
+    background: linear-gradient(135deg, #0a8a9f, #05BBD0);
+    color: var(--bg-escuro);
+    border: none;
+    padding: 8px 18px;
     border-radius: 50px;
     font-weight: 600;
     transition: .3s ease;
+    box-shadow: 0 4px 15px rgba(5, 187, 208, 0.35);
 }
 
 .btn-atribuir:hover {
     transform: scale(1.05);
-    background: rgba(57, 15, 143, 0.7);
-    color: var(--branco);
-    box-shadow: 0 0 15px rgba(123, 47, 255, 0.4);
+    background: linear-gradient(135deg, #05BBD0, #42d4e8);
+    box-shadow: 0 0 25px rgba(5, 187, 208, 0.6);
+    color: var(--bg-escuro);
 }
 
 .btn-resolver {
@@ -716,5 +718,23 @@ td .btn {
     transform: scale(1.05);
     background: linear-gradient(135deg, #00a878, #00e6b0);
     box-shadow: 0 0 25px rgba(0, 200, 151, 0.6);
+    color: var(--branco);
+}
+
+.btn-comentario {
+    background: linear-gradient(135deg, #390F8F, #5a1fd1);
+    color: var(--branco);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: .3s ease;
+    box-shadow: 0 4px 15px rgba(57, 15, 143, 0.35);
+}
+
+.btn-comentario:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #5a1fd1, #7b2fff);
+    box-shadow: 0 0 25px rgba(123, 47, 255, 0.5);
     color: var(--branco);
 }
