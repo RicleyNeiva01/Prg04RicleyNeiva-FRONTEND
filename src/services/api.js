@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: "https://prg04ricleyneiva-backend-production.up.railway.app",
 });
 
 // Antes de cada requisição, injeta o token se existir
