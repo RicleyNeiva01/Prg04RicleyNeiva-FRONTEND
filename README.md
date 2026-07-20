@@ -1,73 +1,119 @@
-🛠️ DeskFlow | Sistema de Suporte Técnico de TI
-O DeskFlow é uma aplicação web desenvolvida com o objetivo de simular um sistema de suporte técnico de TI. A plataforma permite que usuários registrem chamados, acompanhem o andamento dos atendimentos e que técnicos gerenciem e resolvam problemas de forma prática, organizada e eficiente.
+# 🛠️ DeskFlow | Sistema de Suporte Técnico de TI
 
-Este projeto está sendo desenvolvido como parte da disciplina de Programação Web, com foco na construção de uma aplicação completa ao longo do semestre.
+O DeskFlow é uma aplicação web desenvolvida como parte da disciplina de Programação Web, com foco na construção de um sistema completo de suporte técnico de TI. A plataforma permite que usuários registrem chamados, acompanhem atendimentos e que técnicos e administradores gerenciem todo o fluxo de suporte.
 
-## ⚛️ Versão React
+---
 
-Esta versão do projeto foi refatorada utilizando React, com foco em:
+## ⚛️ Tecnologias Utilizadas
 
-- Componentização
-- Reutilização de código
-- Navegação com React Router DOM
-- Estrutura SPA (Single Page Application)
+- ⚛️ React 18
+- 🛣️ React Router DOM
+- 🎨 Bootstrap 5
+- 📊 Recharts
+- 🔗 Axios
+- 🔑 JWT (autenticação)
+- 🎯 React Icons
 
-### Componentes criados
+---
 
-- Navbar
-- Header
-- Footer
-- Funcionalidades
-- Serviços
-- LoginForm
-- Tabela
+## 🎯 Funcionalidades
 
-### Páginas
+### 👤 Usuário Comum
+- ✅ Cadastro e login
+- ✅ Abertura de chamados
+- ✅ Visualização dos próprios chamados
+- ✅ Comentários nos chamados
+- ✅ Visualização do atendimento quando resolvido
+- ✅ Dashboard com estatísticas dos próprios chamados
 
-- Home
-- Login
-- Painel
+### 🔧 Técnico
+- ✅ Visualização dos chamados atribuídos
+- ✅ Registro de atendimento
+- ✅ Comentários nos chamados
+- ✅ Dashboard com estatísticas dos próprios atendimentos
 
-🎯 Objetivo do Projeto
-Desenvolver um sistema web que simule um ambiente real de suporte técnico, aplicando conceitos de:
+### 👑 Administrador
+- ✅ CRUD completo de Usuários
+- ✅ CRUD completo de Técnicos
+- ✅ CRUD completo de Categorias
+- ✅ Gerenciamento de todos os chamados
+- ✅ Atribuição de técnicos
+- ✅ Dashboard completo com gráficos
 
-HTML5
-CSS3
-JavaScript
-React
-React Router DOM
-Bootstrap 5
-Organização de projeto web
-Boas práticas de desenvolvimento
-Organização de projeto web
-Boas práticas de desenvolvimento
-📁 Estrutura do Projeto
-📂 infrastructure
-Responsável por armazenar os arquivos principais e recursos utilizados em todo o sistema.
+---
 
-/assets │ ├── css/ │ └── style.css → Arquivo de estilização principal │ ├── fonts/ → Fontes utilizadas no projeto │ ├── images/ │ ├── Favicon.png → Ícone da aba do navegador │ └── outras imagens │ └── js/ → Scripts JavaScript (em desenvolvimento)
+## 🗂️ Estrutura do Projeto
 
-/pages │ ├── dashboard/ → Página principal do sistema ├── chamados/ → Listagem de chamados ├── novo-chamado/ → Abertura de chamado ├── detalhes/ → Visualização de chamado │ └── index.html → Página inicial (entrada/login)
+📦 Prg04RicleyNeiva-FRONTEND
+└── 📂 src
+├── 📂 components
+│ ├── 📄 Navbar.jsx
+│ ├── 📄 Footer.jsx
+│ ├── 📄 LoginForm.jsx
+│ ├── 📄 TabelaChamado.jsx
+│ ├── 📄 ModalChamado.jsx
+│ ├── 📄 ModalComentarios.jsx
+│ ├── 📄 ModalAtendimento.jsx
+│ ├── 📄 ModalAtribuirTecnico.jsx
+│ ├── 📄 ModalConfirmacao.jsx
+│ └── 📄 ToastMensagem.jsx
+├── 📂 hooks
+│ └── 📄 useAuth.js
+├── 📂 pages
+│ ├── 📄 Home.js
+│ ├── 📄 Login.js
+│ ├── 📄 Cadastro.js
+│ ├── 📄 Painel.js
+│ ├── 📄 Chamados.js
+│ ├── 📄 Usuarios.js
+│ ├── 📄 Tecnicos.js
+│ └── 📄 Categorias.js
+└── 📂 services
+├── 📄 api.js
+├── 📄 usuarioService.js
+├── 📄 tecnicoService.js
+├── 📄 chamadoService.js
+├── 📄 categoriaService.js
+├── 📄 comentarioService.js
+└── 📄 atendimentoService.js
 
-⚙️ Funcionalidades
-O sistema permitirá que o usuário:
 
-✅ Criar chamados de suporte técnico
-✅ Informar título, descrição e categoria
-✅ Visualizar todos os chamados
-✅ Acompanhar o status dos chamados:
-Aberto
-Em andamento
-Resolvido
-✅ Atualizar o status do chamado
-✅ Visualizar detalhes do atendimento
-✅ Filtrar chamados por status
-🛠️ Serviços Disponíveis
-O sistema de suporte técnico abrangerá:
+---
 
-🖥️ Manutenção de computadores
-🌐 Problemas de rede e internet
-💻 Suporte a software
-🔐 Problemas de login e acesso
-🔧 Suporte a hardware
-⚙️ Configuração de sistemas
+## 🔐 Autenticação e Controle de Acesso
+
+- Autenticação via **JWT**
+- Token armazenado no `localStorage`
+- Rotas protegidas por perfil (`ADMIN`, `TECNICO`, `USUARIO_COMUM`)
+- Hook `useAuth` para leitura do perfil logado
+- Interceptor Axios para envio automático do token
+
+---
+
+## 📊 Dashboard
+
+Cada perfil possui um dashboard personalizado:
+
+| Card | ADMIN | TECNICO | USUARIO |
+|------|-------|---------|---------|
+| Total de Chamados | ✅ | ✅ | ✅ |
+| Abertos | ✅ | ✅ | ✅ |
+| Em Andamento | ✅ | ✅ | ✅ |
+| Resolvidos | ✅ | ✅ | ✅ |
+| Técnicos | ✅ | ❌ | ❌ |
+| Usuários | ✅ | ❌ | ❌ |
+| Gráfico de Rosca | ✅ | ✅ | ✅ |
+
+---
+
+## 🚀 Deploy
+
+- **Frontend:** [Vercel](https://prg04-ricley-neiva-frontend-4urk.vercel.app)
+- **Backend:** [Railway](https://prg04ricleyneiva-backend-production.up.railway.app)
+- **Banco de Dados:** Supabase (PostgreSQL)
+
+---
+
+## 🔗 Repositório Back-End
+
+🖥️ **Back-End:** https://github.com/RicleyNeiva01/Prg04RicleyNeiva-BACKEND
