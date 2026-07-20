@@ -38,15 +38,16 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 descricao: "",
                 prioridade: "MEDIA",
                 categoriaId: "",
-                // se for usuário comum, já preenche com o próprio ID
                 usuarioId: isUsuarioComum ? usuario?.id : ""
             });
             setErros({});
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chamado]);
 
     useEffect(() => {
         carregarDados();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function carregarDados() {

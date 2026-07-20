@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import api from "../services/api";
 import { 
@@ -12,7 +12,6 @@ import {
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 function Painel() {
-    const navigate = useNavigate();
     const { usuario, isAdmin, isTecnico } = useAuth();
     const [stats, setStats] = useState(null);
     const [carregando, setCarregando] = useState(true);
@@ -30,11 +29,6 @@ function Painel() {
         }
         carregarDashboard();
     }, []);
-
-    function handleLogout() {
-        localStorage.removeItem("token");
-        navigate("/login");
-    }
 
     function CardStat({ icone, label, valor, cor, destaque }) {
         return (
