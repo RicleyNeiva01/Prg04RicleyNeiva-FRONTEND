@@ -1,26 +1,22 @@
-import axios from "axios";
-import API_URL from "./api";
+import api from "./api";
 
-export const listarUsuarios = (mostrarInativos = false, pagina = 0, tamanho = 6) => {
-    return axios.get(`${API_URL}/usuarios?mostrarInativos=${mostrarInativos}&page=${pagina}&size=${tamanho}&sort=nome,asc`);
-};
+export const listarUsuarios = (mostrarInativos = false, pagina = 0, tamanho = 6) =>
+    api.get(`/usuarios?mostrarInativos=${mostrarInativos}&page=${pagina}&size=${tamanho}&sort=nome,asc`);
 
-export const buscarUsuarioPorId = (id) => {
-    return axios.get(`${API_URL}/usuarios/${id}`);
-};
+export const buscarUsuarioPorId = (id) =>
+    api.get(`/usuarios/${id}`);
 
-export const buscarUsuarioPorNome = (nome, mostrarInativos = false, pagina = 0, tamanho = 6) => {
-    return axios.get(`${API_URL}/usuarios?nome=${nome}&mostrarInativos=${mostrarInativos}&page=${pagina}&size=${tamanho}&sort=nome,asc`);
-};
+export const buscarUsuarioPorNome = (nome, mostrarInativos = false, pagina = 0, tamanho = 6) =>
+    api.get(`/usuarios?nome=${nome}&mostrarInativos=${mostrarInativos}&page=${pagina}&size=${tamanho}&sort=nome,asc`);
 
-export const cadastrarUsuario = (usuario) => {
-    return axios.post(`${API_URL}/usuarios`, usuario);
-};
+export const cadastrarUsuario = (usuario) =>
+    api.post(`/usuarios`, usuario);
 
-export const atualizarUsuario = (id, usuario) => {
-    return axios.put(`${API_URL}/usuarios/${id}`, usuario);
-};
+export const atualizarUsuario = (id, usuario) =>
+    api.put(`/usuarios/${id}`, usuario);
 
-export const excluirUsuario = (id) => {
-    return axios.delete(`${API_URL}/usuarios/${id}`);
-};
+export const excluirUsuario = (id) =>
+    api.delete(`/usuarios/${id}`);
+
+export const reativarUsuario = (id) =>
+    api.put(`/usuarios/${id}/reativar`);

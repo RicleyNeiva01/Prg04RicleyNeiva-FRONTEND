@@ -1,5 +1,6 @@
 import React from "react";
-import { FaEye, FaEdit, FaCommentDots, FaUserPlus, FaCheckCircle, FaTrashAlt, FaTicketAlt, FaInbox } from 'react-icons/fa';
+import { FaEye, FaEdit, FaCommentDots, FaUserPlus, FaTools, FaTrashAlt, FaTicketAlt, FaInbox } from 'react-icons/fa';
+import useAuth from "../hooks/useAuth";
 
 function TabelaChamado({
     dados,
@@ -7,8 +8,9 @@ function TabelaChamado({
     aoEditar,
     aoAtribuirTecnico,
     aoComentarios,
-    aoResolver
+    aoAtender
 }) {
+    const { isAdmin, isTecnico, isUsuario } = useAuth();
 
     function badgeStatus(status) {
         switch (status) {
@@ -55,32 +57,23 @@ function TabelaChamado({
                         {dados && dados.length > 0 ? (
                             dados.map((chamado) => (
                                 <tr key={chamado.id}>
-                                    <td className="id-custom">
-                                        #{chamado.id}
-                                    </td>
+                                    <td className="id-custom">#{chamado.id}</td>
                                     <td>{chamado.titulo}</td>
                                     <td>{chamado.categoria?.nome || "-"}</td>
                                     <td>{chamado.usuario?.nome || "-"}</td>
-                                    <td>
-                                        {chamado.tecnico?.nome || "-"}
-                                    </td>
+                                    <td>{chamado.tecnico?.nome || "-"}</td>
                                     <td>
                                         <span className={`badge ${badgePrioridade(chamado.prioridade)}`}>
-                                            {chamado.prioridade === "URGENTE"
-                                                ? "Urgente"
-                                                : chamado.prioridade === "ALTA"
-                                                    ? "Alta"
-                                                    : chamado.prioridade === "MEDIA"
-                                                        ? "Média"
+                                            {chamado.prioridade === "URGENTE" ? "Urgente"
+                                                : chamado.prioridade === "ALTA" ? "Alta"
+                                                    : chamado.prioridade === "MEDIA" ? "Média"
                                                         : "Baixa"}
                                         </span>
                                     </td>
                                     <td>
                                         <span className={`badge ${badgeStatus(chamado.status)}`}>
-                                            {chamado.status === "ABERTO"
-                                                ? "Aberto"
-                                                : chamado.status === "EM_ANDAMENTO"
-                                                    ? "Em Andamento"
+                                            {chamado.status === "ABERTO" ? "Aberto"
+                                                : chamado.status === "EM_ANDAMENTO" ? "Em Andamento"
                                                     : "Resolvido"}
                                         </span>
                                     </td>
@@ -91,27 +84,29 @@ function TabelaChamado({
                                     </td>
                                     <td className="text-center">
                                         <div className="d-flex justify-content-center gap-2">
-                                            <button
-                                                className="btn btn-editar btn-sm"
-                                                onClick={() => aoEditar(chamado)}
-                                                title={chamado.status === "RESOLVIDO" ? "Visualizar" : "Editar"}
-                                            >
-                                                {chamado.status === "RESOLVIDO" ? (
-                                                    <FaEye />
-                                                ) : (
-                                                    <FaEdit />
-                                                )}
-                                            </button>
 
+                                            {/* Editar — ADMIN e USUARIO_COMUM (só se ABERTO) */}
+                                            {(isAdmin || (isUsuario && chamado.status === "ABERTO")) && (
+                                                <button
+                                                    className="btn btn-editar btn-sm"
+                                                    onClick={() => aoEditar(chamado)}
+                                                    title={chamado.status === "RESOLVIDO" ? "Visualizar" : "Editar"}
+                                                >
+                                                    {chamado.status === "RESOLVIDO" ? <FaEye /> : <FaEdit />}
+                                                </button>
+                                            )}
+
+                                            {/* Comentários — todos */}
                                             <button
-                                                className="btn btn-comentario btn-sm"
+                                                className="btn btn-comentario btn-sm"   
                                                 onClick={() => aoComentarios(chamado)}
                                                 title="Comentários"
                                             >
                                                 <FaCommentDots />
                                             </button>
 
-                                            {chamado.status === "ABERTO" && (
+                                            {/* Atribuir técnico — só ADMIN, chamado ABERTO */}
+                                            {isAdmin && chamado.status === "ABERTO" && (
                                                 <button
                                                     className="btn btn-atribuir btn-sm"
                                                     onClick={() => aoAtribuirTecnico(chamado)}
@@ -121,37 +116,48 @@ function TabelaChamado({
                                                 </button>
                                             )}
 
-                                            {chamado.status === "EM_ANDAMENTO" && (
+                                            {/* Registrar atendimento — só TECNICO, chamado EM_ANDAMENTO */}
+                                            {isTecnico && chamado.status === "EM_ANDAMENTO" && (
                                                 <button
-                                                    className="btn btn-resolver btn-sm"
-                                                    onClick={() => aoResolver(chamado.id)}
-                                                    title="Resolver Chamado"
+                                                    className="btn btn-atendimento btn-sm"
+                                                    onClick={() => aoAtender(chamado)}
+                                                    title="Registrar Atendimento"
                                                 >
-                                                    <FaCheckCircle />
+                                                    <FaTools />
                                                 </button>
                                             )}
 
-                                            <button
-                                                className="btn btn-excluir btn-sm"
-                                                onClick={() => aoExcluir(chamado.id)}
-                                                title="Excluir"
-                                            >
-                                                <FaTrashAlt />
-                                            </button>
+                                            {/* Ver atendimento — todos, chamado RESOLVIDO */}
+                                            {chamado.status === "RESOLVIDO" && (
+                                                <button
+                                                    className="btn btn-atendimento btn-sm"
+                                                    onClick={() => aoAtender(chamado)}
+                                                    title="Visualizar Atendimento"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                            )}
+
+                                            {/* Excluir — só ADMIN, chamado não RESOLVIDO */}
+                                            {isAdmin && chamado.status !== "RESOLVIDO" && (
+                                                <button
+                                                    className="btn btn-excluir btn-sm"
+                                                    onClick={() => aoExcluir(chamado.id)}
+                                                    title="Excluir"
+                                                >
+                                                    <FaTrashAlt />
+                                                </button>
+                                            )}
+
                                         </div>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td
-                                    colSpan="9"
-                                    className="text-center py-5 text-muted"
-                                >
+                                <td colSpan="9" className="text-center py-5 text-muted">
                                     <FaInbox size={50} className="mb-3 opacity-50" />
-                                    <h5 className="text-secondary">
-                                        Nenhum chamado encontrado.
-                                    </h5>
+                                    <h5 className="text-secondary">Nenhum chamado encontrado.</h5>
                                 </td>
                             </tr>
                         )}
@@ -162,4 +168,4 @@ function TabelaChamado({
     );
 }
 
-export default TabelaChamado;
+export default TabelaChamado;    

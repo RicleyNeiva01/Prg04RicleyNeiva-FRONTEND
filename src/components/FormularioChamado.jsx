@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-
-import { listarUsuarios } from "../services/usuarioService";
 import { listarCategorias } from "../services/categoriaService";
+import { listarUsuarios } from "../services/usuarioService";
 import { FaSave, FaTimes } from "react-icons/fa";
+import useAuth from "../hooks/useAuth";
 
 function FormularioChamado({ fechar, aoSalvar, chamado }) {
+    const { usuario, isAdmin, isTecnico } = useAuth();
+    const isUsuarioComum = !isAdmin && !isTecnico;
 
     const [dadosFormulario, setDadosFormulario] = useState({
         id: null,
@@ -16,14 +18,11 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
     });
 
     const [erros, setErros] = useState({});
-
     const [usuarios, setUsuarios] = useState([]);
     const [categorias, setCategorias] = useState([]);
 
     useEffect(() => {
-
         if (chamado) {
-
             setDadosFormulario({
                 id: chamado.id,
                 titulo: chamado.titulo,
@@ -32,21 +31,18 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 categoriaId: chamado.categoria?.id || "",
                 usuarioId: chamado.usuario?.id || ""
             });
-
         } else {
-
             setDadosFormulario({
                 id: null,
                 titulo: "",
                 descricao: "",
                 prioridade: "MEDIA",
                 categoriaId: "",
-                usuarioId: ""
+                // se for usuário comum, já preenche com o próprio ID
+                usuarioId: isUsuarioComum ? usuario?.id : ""
             });
             setErros({});
-
         }
-
     }, [chamado]);
 
     useEffect(() => {
@@ -55,15 +51,14 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
     async function carregarDados() {
         try {
-            const [usuariosResponse, categoriasResponse] =
-                await Promise.all([
-                    listarUsuarios(false, 0, 100),
-                    listarCategorias(0, 100)
-                ]);
-
-            setUsuarios(usuariosResponse.data.content || usuariosResponse.data);
+            const categoriasResponse = await listarCategorias(0, 100);
             setCategorias(categoriasResponse.data.content || categoriasResponse.data);
 
+            // só carrega lista de usuários se for ADMIN
+            if (isAdmin) {
+                const usuariosResponse = await listarUsuarios(false, 0, 100);
+                setUsuarios(usuariosResponse.data.content || usuariosResponse.data);
+            }
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
         }
@@ -71,67 +66,42 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
 
     function handleChange(e) {
         const { name, value } = e.target;
-
-        setDadosFormulario({
-            ...dadosFormulario,
-            [name]: value
-        });
-
-        if (erros[name]) {
-
-            setErros({
-                ...erros,
-                [name]: ""
-            });
-
-        }
+        setDadosFormulario({ ...dadosFormulario, [name]: value });
+        if (erros[name]) setErros({ ...erros, [name]: "" });
     }
 
     function validarFormulario() {
-
         const novosErros = {};
 
-        if (!dadosFormulario.titulo.trim()) {
+        if (!dadosFormulario.titulo.trim())
             novosErros.titulo = "Informe o título.";
-        } else if (dadosFormulario.titulo.trim().length < 5) {
+        else if (dadosFormulario.titulo.trim().length < 5)
             novosErros.titulo = "O título deve possuir pelo menos 5 caracteres.";
-        }
 
-        if (!dadosFormulario.descricao.trim()) {
+        if (!dadosFormulario.descricao.trim())
             novosErros.descricao = "Informe a descrição.";
-        } else if (dadosFormulario.descricao.trim().length < 10) {
-            novosErros.descricao =
-                "A descrição deve possuir pelo menos 10 caracteres.";
-        }
+        else if (dadosFormulario.descricao.trim().length < 10)
+            novosErros.descricao = "A descrição deve possuir pelo menos 10 caracteres.";
 
-        if (!dadosFormulario.categoriaId) {
+        if (!dadosFormulario.categoriaId)
             novosErros.categoriaId = "Selecione uma categoria.";
-        }
 
-        if (!dadosFormulario.usuarioId) {
+        if (!dadosFormulario.usuarioId)
             novosErros.usuarioId = "Selecione um solicitante.";
-        }
 
         setErros(novosErros);
-
         return Object.keys(novosErros).length === 0;
-
     }
 
     function handleSubmit(e) {
-
         e.preventDefault();
-
         if (!validarFormulario()) return;
 
-        const chamadoEnviar = {
+        aoSalvar({
             ...dadosFormulario,
             usuarioId: Number(dadosFormulario.usuarioId),
             categoriaId: Number(dadosFormulario.categoriaId)
-        };
-
-        aoSalvar(chamadoEnviar);
-
+        });
     }
 
     return (
@@ -196,33 +166,30 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 </div>
             </div>
 
-            <div className="mb-4">
-                <label className="form-label">Solicitante</label>
-                <select
-                    className={`form-select ${erros.usuarioId ? "is-invalid" : ""}`}
-                    name="usuarioId"
-                    value={dadosFormulario.usuarioId}
-                    onChange={handleChange}
-                    disabled={!!chamado}
-                >
-                    <option value="">Selecione o usuário...</option>
-                    {usuarios.map(user => (
-                        <option key={user.id} value={user.id}>
-                            {user.nome}
-                        </option>
-                    ))}
-                </select>
-
-                {erros.usuarioId && (
-                    <small className="erro-formulario">{erros.usuarioId}</small>
-                )}
-
-                {chamado && (
-                    <small className="text-warning d-block mt-1">
-                        O solicitante não pode ser alterado após a abertura do chamado.
-                    </small>
-                )}
-            </div>
+            {/* Campo solicitante — só ADMIN vê */}
+            {isAdmin && (
+                <div className="mb-4">
+                    <label className="form-label">Solicitante</label>
+                    <select
+                        className={`form-select ${erros.usuarioId ? "is-invalid" : ""}`}
+                        name="usuarioId"
+                        value={dadosFormulario.usuarioId}
+                        onChange={handleChange}
+                        disabled={!!chamado}
+                    >
+                        <option value="">Selecione o usuário...</option>
+                        {usuarios.map(user => (
+                            <option key={user.id} value={user.id}>{user.nome}</option>
+                        ))}
+                    </select>
+                    {erros.usuarioId && <small className="erro-formulario">{erros.usuarioId}</small>}
+                    {chamado && (
+                        <small className="text-warning d-block mt-1">
+                            O solicitante não pode ser alterado após a abertura do chamado.
+                        </small>
+                    )}
+                </div>
+            )}
 
             <div className="acoes-formulario mt-4 d-flex gap-2 justify-content-end">
                 <button type="button" className="btn btn-cancelar" onClick={fechar}>
@@ -234,7 +201,6 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
             </div>
         </form>
     );
-
 }
 
 export default FormularioChamado;

@@ -5,13 +5,15 @@ import TabelaTecnico from "../components/TabelaTecnico";
 import ModalTecnico from "../components/ModalTecnico";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { FaUndo } from "react-icons/fa";
 
 import {
     listarTecnicos,
     buscarTecnicoPorNome,
     cadastrarTecnico,
     atualizarTecnico,
-    excluirTecnico
+    excluirTecnico,
+    reativarTecnico
 } from "../services/tecnicoService";
 
 function Tecnicos() {
@@ -22,11 +24,17 @@ function Tecnicos() {
     const [mostrarToast, setMostrarToast] = useState(false);
     const [mensagemToast, setMensagemToast] = useState("");
     const [tipoToast, setTipoToast] = useState("success");
-    const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
-    const [idExcluir, setIdExcluir] = useState(null);
     const [mostrarInativos, setMostrarInativos] = useState(false);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+
+    // Estados do Modal de Exclusão
+    const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+    const [idExcluir, setIdExcluir] = useState(null);
+
+    // Novos Estados do Modal de Reativação
+    const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
+    const [idReativar, setIdReativar] = useState(null);
 
     const carregarTecnicos = useCallback(async () => {
         try {
@@ -88,7 +96,7 @@ function Tecnicos() {
             }
             setMostrarFormulario(false);
             setTecnicoEditando(null);
-            await carregarTecnicos();
+            carregarTecnicos();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
@@ -98,6 +106,7 @@ function Tecnicos() {
         }
     }
 
+    // Ações de Exclusão
     function handleExcluirTecnico(id) {
         setIdExcluir(id);
         setMostrarConfirmacao(true);
@@ -106,16 +115,39 @@ function Tecnicos() {
     async function confirmarExclusao() {
         try {
             await excluirTecnico(idExcluir);
-            mostrarMensagem("Técnico excluído com sucesso!", "warning");
-            await carregarTecnicos();
+            mostrarMensagem("Técnico desativado com sucesso!", "warning");
+            carregarTecnicos();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
-                "Erro ao excluir técnico!";
+                error.response?.data?.erro ||
+                "Erro ao desativar técnico!";
             mostrarMensagem(mensagem, "danger");
         }
         setMostrarConfirmacao(false);
         setIdExcluir(null);
+    }
+
+    // Ações de Reativação
+    function handleReativarTecnicoClicado(id) {
+        setIdReativar(id);
+        setMostrarConfirmacaoReativar(true); // Abre o modal de reativação
+    }
+
+    async function confirmarReativacao() {
+        try {
+            await reativarTecnico(idReativar);
+            mostrarMensagem("Técnico reativado com sucesso!", "success");
+            carregarTecnicos();
+        } catch (error) {
+            const mensagem =
+                error.response?.data?.message ||
+                error.response?.data?.erro ||
+                "Erro ao reativar técnico!";
+            mostrarMensagem(mensagem, "danger");
+        }
+        setMostrarConfirmacaoReativar(false); // Fecha o modal
+        setIdReativar(null);
     }
 
     function handleEditarTecnico(tecnico) {
@@ -176,7 +208,12 @@ function Tecnicos() {
                     </div>
                 </div>
 
-                <TabelaTecnico dados={tecnicos} aoExcluir={handleExcluirTecnico} aoEditar={handleEditarTecnico} />
+                <TabelaTecnico 
+                    dados={tecnicos} 
+                    aoExcluir={handleExcluirTecnico} 
+                    aoEditar={handleEditarTecnico} 
+                    aoReativar={handleReativarTecnicoClicado} // Passamos a função que abre o modal
+                />
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -206,11 +243,26 @@ function Tecnicos() {
 
                 <ToastMensagem mostrar={mostrarToast} mensagem={mensagemToast} tipo={tipoToast} />
 
-                <ModalConfirmacao mostrar={mostrarConfirmacao}
+                {/* Modal de Exclusão Original */}
+                <ModalConfirmacao 
+                    mostrar={mostrarConfirmacao}
                     fechar={() => { setMostrarConfirmacao(false); setIdExcluir(null); }}
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
-                    mensagem="Tem certeza que deseja excluir este técnico?" />
+                    mensagem="Tem certeza que deseja desativar este técnico?" 
+                />
+
+                {/* NOVO Modal de Reativação COM AS PROPS NOVAS IGUAL USUARIOS */}
+                <ModalConfirmacao 
+                    mostrar={mostrarConfirmacaoReativar}
+                    fechar={() => { setMostrarConfirmacaoReativar(false); setIdReativar(null); }}
+                    aoConfirmar={confirmarReativacao}
+                    titulo="Confirmar Reativação"
+                    mensagem="Tem certeza que deseja reativar o acesso deste técnico?" 
+                    textoBotaoConfirmar="Reativar"
+                    iconeBotaoConfirmar={<FaUndo className="me-2" />}
+                    classeBotaoConfirmar="btn btn-success"
+                />
             </main>
             <Footer />
         </div>

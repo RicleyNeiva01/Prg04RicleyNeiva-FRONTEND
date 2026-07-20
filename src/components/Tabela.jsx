@@ -1,7 +1,9 @@
 import React from "react";
-import { FaEdit, FaTrashAlt, FaUsers, FaInbox } from 'react-icons/fa';
+// 1. Importado o ícone FaUndo para simbolizar a reativação
+import { FaEdit, FaTrashAlt, FaUsers, FaInbox, FaUndo } from 'react-icons/fa';
 
-function Tabela({ dados, aoExcluir, aoEditar }) {
+// 2. Adicionado o prop 'aoReativar' na assinatura do componente
+function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
     return (
         <div className="card shadow-lg">
             <div className="card-header card-header-custom">
@@ -60,21 +62,37 @@ function Tabela({ dados, aoExcluir, aoEditar }) {
                                     </td>
                                     <td className="text-center">
                                         <div className="d-flex justify-content-center gap-2">
-                                            <button
-                                                className="btn btn-editar btn-sm"
-                                                onClick={() => aoEditar(usuario)}
-                                                title="Editar"
-                                            >
-                                                <FaEdit />
-                                            </button>
+                                            {/* 3. Renderização Condicional Inteligente baseada no status 'ativo' */}
+                                            {usuario.ativo ? (
+                                                <>
+                                                    {/* Usuário Ativo: Mostra Editar e Lixeira */}
+                                                    <button
+                                                        className="btn btn-editar btn-sm"
+                                                        onClick={() => aoEditar(usuario)}
+                                                        title="Editar"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
 
-                                            <button
-                                                className="btn btn-excluir excluir btn-sm"
-                                                onClick={() => aoExcluir(usuario.id)}
-                                                title="Excluir"
-                                            >
-                                                <FaTrashAlt />
-                                            </button>
+                                                    <button
+                                                        className="btn btn-excluir excluir btn-sm"
+                                                        onClick={() => aoExcluir(usuario.id)}
+                                                        title="Excluir"
+                                                    >
+                                                        <FaTrashAlt />
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                /* Usuário Inativo: Mostra SOMENTE o Botão Reativar */
+                                                <button
+                                                    className="btn btn-outline-success btn-sm px-3 py-1 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                                                    onClick={() => aoReativar(usuario.id)}
+                                                    title="Reativar Usuário"
+                                                    style={{ fontWeight: "600", borderRadius: "20px", transition: "0.2s" }}
+                                                >
+                                                    <FaUndo size={13} /> Reativar
+                                                </button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>
@@ -86,7 +104,7 @@ function Tabela({ dados, aoExcluir, aoEditar }) {
                                     <h5 className="text-secondary">
                                         Nenhum usuário encontrado.
                                     </h5>
-                                </td>
+                                </td>s
                             </tr>
                         )}
                     </tbody>

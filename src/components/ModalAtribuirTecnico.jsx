@@ -105,7 +105,7 @@ function ModalAtribuirTecnico({ mostrar, fechar, chamado, aoSalvar }) {
                         <button type="button" className="btn btn-cancelar" onClick={fechar}>
                             Cancelar
                         </button>
-                        <button type="submit" className="btn btn-resolver">
+                        <button type="submit" className="btn btn-atendimento">
                             Salvar Atribuição
                         </button>
                     </div>

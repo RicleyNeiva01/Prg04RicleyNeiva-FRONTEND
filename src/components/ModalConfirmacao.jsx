@@ -7,7 +7,11 @@ function ModalConfirmacao({
     aoConfirmar,
     titulo,
     mensagem,
-    observacao
+    observacao,
+    // Novas props para customizar o botão de confirmação
+    textoBotaoConfirmar = "Excluir", 
+    iconeBotaoConfirmar = <FaTrashAlt className="me-2" />,
+    classeBotaoConfirmar = "btn-excluir" 
 }) {
     if (!mostrar) return null;
 
@@ -40,28 +44,17 @@ function ModalConfirmacao({
             >
                 <div className="text-center mb-4">
                     <FaExclamationTriangle size={45} style={{ color: "#FFC107", marginBottom: "15px" }} />
-                    <h3
-                        style={{ color: "#20D6F7", margin: 0 }}
-                    >
+                    <h3 style={{ color: "#20D6F7", margin: 0 }}>
                         {titulo}
                     </h3>
                 </div>
 
                 <div className="text-center">
-                    <p
-                        style={{
-                            fontSize: "17px",
-                            marginBottom: "10px"
-                        }}
-                    >
+                    <p style={{ fontSize: "17px", marginBottom: "10px" }}>
                         {mensagem}
                     </p>
 
-                    <small
-                        style={{
-                            color: "#BFC7D5"
-                        }}
-                    >
+                    <small style={{ color: "#BFC7D5" }}>
                         {observacao}
                     </small>
                 </div>
@@ -74,11 +67,12 @@ function ModalConfirmacao({
                         <FaTimes className="me-2" /> Cancelar
                     </button>
 
+                    {/* Botão de confirmar agora é dinâmico! */}
                     <button
-                        className="btn-excluir d-flex align-items-center px-4"
+                        className={`${classeBotaoConfirmar} d-flex align-items-center px-4`}
                         onClick={aoConfirmar}
                     >
-                        <FaTrashAlt className="me-2" /> Excluir
+                        {iconeBotaoConfirmar} {textoBotaoConfirmar}
                     </button>
                 </div>
             </div>

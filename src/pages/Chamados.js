@@ -7,17 +7,20 @@ import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import ModalAtribuirTecnico from "../components/ModalAtribuirTecnico";
 import ModalComentarios from "../components/ModalComentarios";
+import ModalAtendimento from "../components/ModalAtendimento";
+import useAuth from "../hooks/useAuth";
 
 import {
     listarChamados,
     cadastrarChamado,
     atualizarChamado,
     excluirChamado,
-    atualizarStatus,
     atribuirTecnico
 } from "../services/chamadoService";
 
 function Chamados() {
+    const { isTecnico, isUsuario } = useAuth();
+
     const [chamados, setChamados] = useState([]);
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [chamadoEditando, setChamadoEditando] = useState(null);
@@ -34,17 +37,13 @@ function Chamados() {
     const [filtroStatus, setFiltroStatus] = useState("");
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+    const [mostrarModalAtendimento, setMostrarModalAtendimento] = useState(false);
+    const [chamadoAtendimento, setChamadoAtendimento] = useState(null);
 
     const carregarChamados = useCallback(async () => {
         try {
-            const response = await listarChamados(
-                filtroStatus,
-                tituloBusca,
-                paginaAtual
-            );
-
+            const response = await listarChamados(filtroStatus, tituloBusca, paginaAtual);
             setChamados(response.data.content || response.data);
-
             if (response.data.totalPages !== undefined) {
                 setTotalPaginas(response.data.totalPages);
             }
@@ -59,32 +58,20 @@ function Chamados() {
     }, [paginaAtual, filtroStatus]);
 
     async function handlePesquisar() {
-
         setPaginaAtual(0);
-
         if (tituloBusca.trim() === "") {
             carregarChamados();
             return;
         }
-
         try {
-
-            const response = await listarChamados(
-                filtroStatus,
-                tituloBusca,
-                0
-            );
-
+            const response = await listarChamados(filtroStatus, tituloBusca, 0);
             setChamados(response.data.content || response.data);
-
             if (response.data.totalPages !== undefined) {
                 setTotalPaginas(response.data.totalPages);
             }
-
             if ((response.data.content || response.data).length === 0) {
                 mostrarMensagem("Nenhum chamado encontrado.", "warning");
             }
-
         } catch (error) {
             mostrarMensagem("Erro ao pesquisar chamados.", "danger");
         }
@@ -106,17 +93,14 @@ function Chamados() {
                 await cadastrarChamado(chamado);
                 mostrarMensagem("Chamado aberto com sucesso!", "success");
             }
-
             setMostrarFormulario(false);
             setChamadoEditando(null);
             await carregarChamados();
-
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao salvar chamado!";
-
             mostrarMensagem(mensagem, "danger");
         }
     }
@@ -129,20 +113,15 @@ function Chamados() {
     async function confirmarExclusao() {
         try {
             await excluirChamado(idExcluir);
-
             mostrarMensagem("Chamado excluído com sucesso!", "warning");
-
             await carregarChamados();
-
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao excluir chamado!";
-
             mostrarMensagem(mensagem, "danger");
         }
-
         setMostrarConfirmacao(false);
         setIdExcluir(null);
     }
@@ -162,36 +141,24 @@ function Chamados() {
         setMostrarComentarios(true);
     }
 
+    function handleAbrirAtendimento(chamado) {
+        setChamadoAtendimento(chamado);
+        setMostrarModalAtendimento(true);
+    }
+
     async function handleSalvarAtribuicao(chamadoId, tecnicoId) {
         try {
             await atribuirTecnico(chamadoId, Number(tecnicoId));
-
-            mostrarMensagem(
-                "Técnico atribuído com sucesso! Status alterado para Em Andamento.",
-                "success"
-            );
-
+            mostrarMensagem("Técnico atribuído com sucesso! Status alterado para Em Andamento.", "success");
             setMostrarModalTecnico(false);
             setChamadoSelecionado(null);
-
             await carregarChamados();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao atribuir técnico!";
-
             mostrarMensagem(mensagem, "danger");
-        }
-    }
-
-    async function handleResolverChamado(id) {
-        try {
-            await atualizarStatus(id, "RESOLVIDO");
-            mostrarMensagem("Chamado resolvido com sucesso!", "success");
-            await carregarChamados();
-        } catch (error) {
-            mostrarMensagem("Erro ao resolver chamado!", "danger");
         }
     }
 
@@ -201,20 +168,25 @@ function Chamados() {
             <main className="container py-5 flex-grow-1">
                 <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start mb-4 gap-3">
                     <div>
-                        <h2 className="titulo-pagina">🎫 Gerenciamento de Chamados</h2>
+                        <h2 className="titulo-pagina">
+                            {isUsuario ? "🎫 Meus Chamados" : "🎫 Gerenciamento de Chamados"}
+                        </h2>
                         <p className="subtitulo-pagina mb-0">
-                            Acompanhe, edite e gerencie os chamados de suporte do DeskFlow.
+                            {isUsuario
+                                ? "Acompanhe e gerencie seus chamados de suporte."
+                                : "Acompanhe, edite e gerencie os chamados de suporte do DeskFlow."}
                         </p>
                     </div>
-                    <button className="btn btn-custom shadow fw-bold px-4"
-                        onClick={() => { setChamadoEditando(null); setMostrarFormulario(true); }}>
-                        ➕ Novo Chamado
-                    </button>
+                    {!isTecnico && (
+                        <button className="btn btn-custom shadow fw-bold px-4"
+                            onClick={() => { setChamadoEditando(null); setMostrarFormulario(true); }}>
+                            ➕ Novo Chamado
+                        </button>
+                    )}
                 </div>
 
                 <div className="mb-4">
                     <div className="d-flex gap-2 mb-2 flex-wrap flex-md-nowrap align-items-center">
-                        {/* Dropdown de Status no lugar do Checkbox */}
                         <select
                             className="form-select w-auto"
                             value={filtroStatus}
@@ -238,7 +210,6 @@ function Chamados() {
                             onChange={(e) => {
                                 const valor = e.target.value;
                                 setTituloBusca(valor);
-
                                 if (valor.trim() === "") {
                                     setPaginaAtual(0);
                                     carregarChamados();
@@ -258,7 +229,7 @@ function Chamados() {
                     aoEditar={handleEditarChamado}
                     aoAtribuirTecnico={handleAbrirModalTecnico}
                     aoComentarios={handleAbrirComentarios}
-                    aoResolver={handleResolverChamado}
+                    aoAtender={handleAbrirAtendimento}
                 />
 
                 {totalPaginas > 1 && (
@@ -309,6 +280,17 @@ function Chamados() {
                         setChamadoComentario(null);
                     }}
                     chamado={chamadoComentario}
+                    mostrarMensagem={mostrarMensagem}
+                />
+
+                <ModalAtendimento
+                    mostrar={mostrarModalAtendimento}
+                    fechar={() => {
+                        setMostrarModalAtendimento(false);
+                        setChamadoAtendimento(null);
+                        carregarChamados();
+                    }}
+                    chamado={chamadoAtendimento}
                     mostrarMensagem={mostrarMensagem}
                 />
             </main>

@@ -1,7 +1,7 @@
 import React from "react";
-import { FaEdit, FaTrashAlt, FaTools, FaInbox } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaTools, FaInbox, FaUndo } from 'react-icons/fa';
 
-function TabelaTecnico({ dados, aoExcluir, aoEditar }) {
+function TabelaTecnico({ dados, aoExcluir, aoEditar, aoReativar }) {
     return (
         <div className="card shadow-lg">
             <div className="card-header card-header-custom">
@@ -43,21 +43,37 @@ function TabelaTecnico({ dados, aoExcluir, aoEditar }) {
                                     </td>
                                     <td className="text-center">
                                         <div className="d-flex justify-content-center gap-2">
-                                            <button
-                                                className="btn btn-editar btn-sm"
-                                                onClick={() => aoEditar(tecnico)}
-                                                title="Editar"
-                                            >
-                                                <FaEdit />
-                                            </button>
+                                            {/* Renderização Condicional Idêntica a de Usuários */}
+                                            {tecnico.ativo ? (
+                                                <>
+                                                    {/* Técnico Ativo: Mostra Editar e Lixeira */}
+                                                    <button
+                                                        className="btn btn-editar btn-sm"
+                                                        onClick={() => aoEditar(tecnico)}
+                                                        title="Editar"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
 
-                                            <button
-                                                className="btn btn-excluir excluir btn-sm"
-                                                onClick={() => aoExcluir(tecnico.id)}
-                                                title="Excluir"
-                                            >
-                                                <FaTrashAlt />
-                                            </button>
+                                                    <button
+                                                        className="btn btn-excluir excluir btn-sm"
+                                                        onClick={() => aoExcluir(tecnico.id)}
+                                                        title="Excluir"
+                                                    >
+                                                        <FaTrashAlt />
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                /* Técnico Inativo: Mostra SOMENTE o Botão Reativar estilizado */
+                                                <button
+                                                    className="btn btn-outline-success btn-sm px-3 py-1 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                                                    onClick={() => aoReativar(tecnico.id)}
+                                                    title="Reativar Técnico"
+                                                    style={{ fontWeight: "600", borderRadius: "20px", transition: "0.2s" }}
+                                                >
+                                                    <FaUndo size={13} /> Reativar
+                                                </button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

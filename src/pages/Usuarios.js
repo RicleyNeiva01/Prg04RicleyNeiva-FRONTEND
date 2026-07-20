@@ -5,13 +5,15 @@ import Tabela from "../components/Tabela";
 import ModalUsuario from "../components/ModalUsuario";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { FaUndo } from "react-icons/fa"; // <-- IMPORTAMOS O ÍCONE AQUI
 
 import {
     listarUsuarios,
     buscarUsuarioPorNome,
     cadastrarUsuario,
     atualizarUsuario,
-    excluirUsuario
+    excluirUsuario,
+    reativarUsuario
 } from "../services/usuarioService";
 
 function Usuarios() {
@@ -22,11 +24,17 @@ function Usuarios() {
     const [mostrarToast, setMostrarToast] = useState(false);
     const [mensagemToast, setMensagemToast] = useState("");
     const [tipoToast, setTipoToast] = useState("success");
-    const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
-    const [idExcluir, setIdExcluir] = useState(null);
     const [mostrarInativos, setMostrarInativos] = useState(false);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+
+    // Estados do Modal de Exclusão
+    const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+    const [idExcluir, setIdExcluir] = useState(null);
+
+    // Novos Estados do Modal de Reativação
+    const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
+    const [idReativar, setIdReativar] = useState(null);
 
     const carregarUsuarios = useCallback(async () => {
         try {
@@ -98,6 +106,7 @@ function Usuarios() {
         }
     }
 
+    // Ações de Exclusão
     function handleExcluirUsuario(id) {
         setIdExcluir(id);
         setMostrarConfirmacao(true);
@@ -117,6 +126,28 @@ function Usuarios() {
         }
         setMostrarConfirmacao(false);
         setIdExcluir(null);
+    }
+
+    // Ações de Reativação
+    function handleReativarUsuarioClicado(id) {
+        setIdReativar(id);
+        setMostrarConfirmacaoReativar(true); // Abre o modal de reativação
+    }
+
+    async function confirmarReativacao() {
+        try {
+            await reativarUsuario(idReativar);
+            mostrarMensagem("Usuário reativado com sucesso!", "success");
+            carregarUsuarios();
+        } catch (error) {
+            const mensagem =
+                error.response?.data?.message ||
+                error.response?.data?.erro ||
+                "Erro ao reativar usuário!";
+            mostrarMensagem(mensagem, "danger");
+        }
+        setMostrarConfirmacaoReativar(false); // Fecha o modal
+        setIdReativar(null);
     }
 
     function handleEditarUsuario(usuario) {
@@ -177,7 +208,12 @@ function Usuarios() {
                     </div>
                 </div>
 
-                <Tabela dados={usuarios} aoExcluir={handleExcluirUsuario} aoEditar={handleEditarUsuario} />
+                <Tabela 
+                    dados={usuarios} 
+                    aoExcluir={handleExcluirUsuario} 
+                    aoEditar={handleEditarUsuario} 
+                    aoReativar={handleReativarUsuarioClicado} // Passamos a função que abre o modal
+                />
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -207,11 +243,26 @@ function Usuarios() {
 
                 <ToastMensagem mostrar={mostrarToast} mensagem={mensagemToast} tipo={tipoToast} />
 
-                <ModalConfirmacao mostrar={mostrarConfirmacao}
+                {/* Modal de Exclusão Original */}
+                <ModalConfirmacao 
+                    mostrar={mostrarConfirmacao}
                     fechar={() => { setMostrarConfirmacao(false); setIdExcluir(null); }}
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
-                    mensagem="Tem certeza que deseja excluir este usuário?" />
+                    mensagem="Tem certeza que deseja desativar este usuário?" 
+                />
+
+                {/* NOVO Modal de Reativação COM AS PROPS NOVAS */}
+                <ModalConfirmacao 
+                    mostrar={mostrarConfirmacaoReativar}
+                    fechar={() => { setMostrarConfirmacaoReativar(false); setIdReativar(null); }}
+                    aoConfirmar={confirmarReativacao}
+                    titulo="Confirmar Reativação"
+                    mensagem="Tem certeza que deseja reativar o acesso deste usuário?" 
+                    textoBotaoConfirmar="Reativar"
+                    iconeBotaoConfirmar={<FaUndo className="me-2" />}
+                    classeBotaoConfirmar="btn btn-success"
+                />
             </main>
             <Footer />
         </div>
