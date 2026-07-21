@@ -2,33 +2,25 @@ import { useState, useEffect } from "react";
 import { FaSave, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 
 function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
-
     const [dadosFormulario, setDadosFormulario] = useState({
-
         nome: "",
         cpf: "",
         telefone: "",
         email: "",
         senha: "",
         especialidade: ""
-
     });
 
     const [erros, setErros] = useState({});
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
-
     useEffect(() => {
-
         if (tecnico) {
-
             setDadosFormulario({
                 ...tecnico,
                 senha: ""
             });
-
         } else {
-
             setDadosFormulario({
                 nome: "",
                 cpf: "",
@@ -37,24 +29,19 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
                 senha: "",
                 especialidade: ""
             });
-
         }
-
     }, [tecnico]);
 
     function aplicarMascaraCPF(valor) {
-
         valor = valor.replace(/\D/g, "").slice(0, 11);
         valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
         valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
         valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-
         return valor;
     }
 
     function aplicarMascaraTelefone(valor) {
         valor = valor.replace(/\D/g, "").slice(0, 11);
-
         if (valor.length <= 10) {
             valor = valor.replace(/(\d{2})(\d)/, "($1) $2");
             valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
@@ -62,21 +49,14 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
             valor = valor.replace(/(\d{2})(\d)/, "($1) $2");
             valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
         }
-
         return valor;
-
     }
 
     function handleChange(e) {
         let { name, value } = e.target;
 
-        if (name === "cpf") {
-            value = aplicarMascaraCPF(value);
-        }
-
-        if (name === "telefone") {
-            value = aplicarMascaraTelefone(value);
-        }
+        if (name === "cpf") value = aplicarMascaraCPF(value);
+        if (name === "telefone") value = aplicarMascaraTelefone(value);
 
         setDadosFormulario({
             ...dadosFormulario,
@@ -92,8 +72,8 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
     }
 
     function validarFormulario() {
-
         const novosErros = {};
+        
         // Nome
         if (!dadosFormulario.nome.trim()) {
             novosErros.nome = "O nome é obrigatório.";
@@ -103,12 +83,10 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
 
         // CPF
         const cpf = dadosFormulario.cpf.replace(/\D/g, "");
-
         if (!cpf) {
             novosErros.cpf = "O CPF é obrigatório.";
         } else if (cpf.length !== 11) {
             novosErros.cpf = "O CPF deve conter 11 dígitos.";
-
         }
 
         // Telefone
@@ -117,7 +95,6 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
             novosErros.telefone = "O telefone é obrigatório.";
         } else if (telefone.length < 10) {
             novosErros.telefone = "Telefone inválido.";
-
         }
 
         // Email
@@ -125,7 +102,6 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
             novosErros.email = "O e-mail é obrigatório.";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dadosFormulario.email)) {
             novosErros.email = "Informe um e-mail válido.";
-
         }
 
         // Senha
@@ -134,208 +110,153 @@ function FormularioTecnico({ fechar, aoSalvar, tecnico }) {
                 novosErros.senha = "A senha é obrigatória.";
             } else if (dadosFormulario.senha.length < 6) {
                 novosErros.senha = "A senha deve possuir pelo menos 6 caracteres.";
-
             }
-
         }
 
         // Especialidade
         if (!dadosFormulario.especialidade.trim()) {
             novosErros.especialidade = "A especialidade é obrigatória.";
         }
+        
         setErros(novosErros);
-
         return Object.keys(novosErros).length === 0;
-
     }
 
     function handleSubmit(e) {
-
         e.preventDefault();
         if (!validarFormulario()) {
-
             return;
-
         }
         const tecnicoEnviar = { ...dadosFormulario };
 
         tecnicoEnviar.cpf = tecnicoEnviar.cpf.replace(/\D/g, "");
         tecnicoEnviar.telefone = tecnicoEnviar.telefone.replace(/\D/g, "");
+        
         if (tecnicoEnviar.senha.trim() === "") {
             delete tecnicoEnviar.senha;
         }
+        
         aoSalvar(tecnicoEnviar);
-
     }
 
     return (
-
-        <form
-            className="form-modal"
-            onSubmit={handleSubmit}
-        >
-
-            <div className="mb-3">
-
-                <label className="form-label">
-                    Nome Completo
-                </label>
-
-                <input
-                    type="text"
-                    className={`form-control ${erros.nome ? "is-invalid" : ""}`}
-                    name="nome"
-                    value={dadosFormulario.nome}
-                    onChange={handleChange}
-                />
-
-                {erros.nome && (
-                    <small className="erro-formulario">
-                        {erros.nome}
-                    </small>
-                )}
-            </div>
-
-            <div className="mb-3">
-
-                <label className="form-label">
-                    CPF
-                </label>
-
-                <input
-                    type="text"
-                    className={`form-control ${erros.cpf ? "is-invalid" : ""}`}
-                    name="cpf"
-                    value={dadosFormulario.cpf}
-                    onChange={handleChange}
-                />
-
-                {erros.cpf && (
-                    <small className="erro-formulario">
-                        {erros.cpf}
-                    </small>
-                )}
-
-            </div>
-
-            <div className="mb-3">
-
-                <label className="form-label">
-                    Telefone
-                </label>
-
-                <input
-                    type="text"
-                    className={`form-control ${erros.telefone ? "is-invalid" : ""}`}
-                    name="telefone"
-                    value={dadosFormulario.telefone}
-                    onChange={handleChange}
-                />
-
-                {erros.telefone && (
-                    <small className="erro-formulario">
-                        {erros.telefone}
-                    </small>
-                )}
-
-            </div>
-
-            <div className="mb-3">
-
-                <label className="form-label">
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    className={`form-control ${erros.email ? "is-invalid" : ""}`}
-                    name="email"
-                    value={dadosFormulario.email}
-                    onChange={handleChange}
-                />
-
-                {erros.email && (
-                    <small className="erro-formulario">
-                        {erros.email}
-                    </small>
-                )}
-
-            </div>
-
-            <div className="mb-3">
-                <label className="form-label">Senha</label>
-                <div className="campo-senha">
+        <form className="form-modal text-start" onSubmit={handleSubmit}>
+            
+            {/* Primeira Linha: Nome e CPF */}
+            <div className="row">
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Nome Completo</label>
                     <input
-                        type={mostrarSenha ? "text" : "password"}
-                        className={`form-control ${erros.senha ? "is-invalid" : ""}`}
-                        name="senha"
-                        value={dadosFormulario.senha}
+                        type="text"
+                        className={`form-control input-glass ${erros.nome ? "is-invalid" : ""}`}
+                        name="nome"
+                        placeholder="Digite o nome..."
+                        value={dadosFormulario.nome}
                         onChange={handleChange}
                     />
-                    <button
-                        type="button"
-                        className="btn-mostrar-senha"
-                        onClick={() => setMostrarSenha(!mostrarSenha)}
-                    >
-                        {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+                    {erros.nome && <small className="erro-formulario">{erros.nome}</small>}
                 </div>
-                {erros.senha && (
-                    <small className="erro-formulario">{erros.senha}</small>
-                )}
-                {tecnico && (
-                    <small className="d-block mt-2" style={{ color: "#AFC4FF", fontSize: "13px" }}>
-                        🔒 Deixe a senha em branco para manter a senha atual.
-                    </small>
-                )}
+
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">CPF</label>
+                    <input
+                        type="text"
+                        className={`form-control input-glass ${erros.cpf ? "is-invalid" : ""}`}
+                        name="cpf"
+                        placeholder="000.000.000-00"
+                        value={dadosFormulario.cpf}
+                        onChange={handleChange}
+                    />
+                    {erros.cpf && <small className="erro-formulario">{erros.cpf}</small>}
+                </div>
             </div>
 
-            <div className="mb-4">
+            {/* Segunda Linha: Telefone e Email */}
+            <div className="row">
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Telefone</label>
+                    <input
+                        type="text"
+                        className={`form-control input-glass ${erros.telefone ? "is-invalid" : ""}`}
+                        name="telefone"
+                        placeholder="(00) 00000-0000"
+                        value={dadosFormulario.telefone}
+                        onChange={handleChange}
+                    />
+                    {erros.telefone && <small className="erro-formulario">{erros.telefone}</small>}
+                </div>
 
-                <label className="form-label">
-                    Especialidade
-                </label>
-
-                <input
-                    type="text"
-                    className={`form-control ${erros.especialidade ? "is-invalid" : ""}`}
-                    name="especialidade"
-                    placeholder="Ex.: Hardware, Redes, Softwares, Impressoras..."
-                    value={dadosFormulario.especialidade}
-                    onChange={handleChange}
-                />
-
-                {erros.especialidade && (
-                    <small className="erro-formulario">
-                        {erros.especialidade}
-                    </small>
-                )}
-
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Email</label>
+                    <input
+                        type="email"
+                        className={`form-control input-glass ${erros.email ? "is-invalid" : ""}`}
+                        name="email"
+                        placeholder="exemplo@email.com"
+                        value={dadosFormulario.email}
+                        onChange={handleChange}
+                    />
+                    {erros.email && <small className="erro-formulario">{erros.email}</small>}
+                </div>
             </div>
 
-            <div className="acoes-formulario">
+            {/* Terceira Linha: Senha e Especialidade */}
+            <div className="row">
+                <div className="col-md-6 mb-3">
+                    <label className="form-label">Senha</label>
+                    <div className="campo-senha position-relative">
+                        <input
+                            type={mostrarSenha ? "text" : "password"}
+                            className={`form-control input-glass ${erros.senha ? "is-invalid" : ""}`}
+                            name="senha"
+                            placeholder={tecnico ? "••••••••" : "Mínimo 6 caracteres"}
+                            value={dadosFormulario.senha}
+                            onChange={handleChange}
+                            style={{ paddingRight: "40px" }}
+                        />
+                        <button
+                            type="button"
+                            className="btn-mostrar-senha"
+                            onClick={() => setMostrarSenha(!mostrarSenha)}
+                        >
+                            {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
+                    {erros.senha && <small className="erro-formulario">{erros.senha}</small>}
+                    {tecnico && (
+                        <small className="texto-ajuda d-block mt-1">
+                            🔒 Deixe em branco para manter a atual.
+                        </small>
+                    )}
+                </div>
 
-                <button
-                    type="button"
-                    className="btn btn-cancelar"
-                    onClick={fechar}
-                >
+                <div className="col-md-6 mb-4">
+                    <label className="form-label">Especialidade</label>
+                    <input
+                        type="text"
+                        className={`form-control input-glass ${erros.especialidade ? "is-invalid" : ""}`}
+                        name="especialidade"
+                        placeholder="Ex.: Hardware, Redes..."
+                        value={dadosFormulario.especialidade}
+                        onChange={handleChange}
+                    />
+                    {erros.especialidade && <small className="erro-formulario">{erros.especialidade}</small>}
+                </div>
+            </div>
+
+            {/* Botões de Ação */}
+            <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
-
-                <button
-                    type="submit"
-                    className="btn btn-custom"
-                >
+                
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
                     <FaSave className="me-2" /> Salvar
                 </button>
-
             </div>
 
         </form>
-
     );
-
 }
 
 export default FormularioTecnico;

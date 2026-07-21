@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaSave } from "react-icons/fa";
+import { 
+    FaEye, FaEyeSlash, FaSave, FaUser, 
+    FaIdCard, FaPhoneAlt, FaEnvelope, FaLock 
+} from "react-icons/fa";
 import api from "../services/api";
 import ToastMensagem from "../components/ToastMensagem";
 import Navbar from "../components/Navbar";
@@ -51,23 +54,21 @@ function Cadastro() {
 
     function validar() {
         const novosErros = {};
-
-        if (!dados.nome.trim()) novosErros.nome = "O nome é obrigatório.";
-        else if (dados.nome.trim().length < 3) novosErros.nome = "Mínimo 3 caracteres.";
+        if (!dados.nome.trim()) novosErros.nome = "Obrigatório.";
+        else if (dados.nome.trim().length < 3) novosErros.nome = "Mínimo 3 letras.";
 
         const cpf = dados.cpf.replace(/\D/g, "");
-        if (!cpf) novosErros.cpf = "O CPF é obrigatório.";
-        else if (cpf.length !== 11) novosErros.cpf = "CPF deve conter 11 dígitos.";
+        if (!cpf) novosErros.cpf = "Obrigatório.";
+        else if (cpf.length !== 11) novosErros.cpf = "CPF inválido.";
 
         const telefone = dados.telefone.replace(/\D/g, "");
-        if (!telefone) novosErros.telefone = "O telefone é obrigatório.";
+        if (!telefone) novosErros.telefone = "Obrigatório.";
         else if (telefone.length < 10) novosErros.telefone = "Telefone inválido.";
 
-        if (!dados.email.trim()) novosErros.email = "O e-mail é obrigatório.";
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email))
-            novosErros.email = "E-mail inválido.";
+        if (!dados.email.trim()) novosErros.email = "Obrigatório.";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) novosErros.email = "E-mail inválido.";
 
-        if (!dados.senha.trim()) novosErros.senha = "A senha é obrigatória.";
+        if (!dados.senha.trim()) novosErros.senha = "Obrigatória.";
         else if (dados.senha.length < 6) novosErros.senha = "Mínimo 6 caracteres.";
 
         setErros(novosErros);
@@ -92,10 +93,7 @@ function Cadastro() {
             exibirToast("Conta criada com sucesso! Redirecionando...", "success");
             setTimeout(() => navigate("/login"), 1500);
         } catch (error) {
-            const mensagem =
-                error.response?.data?.erro ||
-                error.response?.data?.message ||
-                "Erro ao criar conta.";
+            const mensagem = error.response?.data?.erro || error.response?.data?.message || "Erro ao criar conta.";
             exibirToast(mensagem, "danger");
         } finally {
             setCarregando(false);
@@ -103,105 +101,154 @@ function Cadastro() {
     }
 
     return (
-        /* Mesma estrutura da tela de Login para garantir o fundo igual */
-        <div className="login-bg min-vh-100">
+        <div className="login-bg min-vh-100 d-flex flex-column">
+            
+            {/* INJEÇÃO DE ESTILOS EXTRAS */}
+            <style>
+                {`
+                    .input-group-text.glass-icon {
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid rgba(5, 187, 208, 0.4);
+                        border-right: none;
+                        color: #05BBD0;
+                    }
+                    .form-control.input-glass-icon {
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid rgba(5, 187, 208, 0.4);
+                        border-left: none;
+                        color: white;
+                    }
+                    .form-control.input-glass-icon:focus {
+                        background: rgba(255, 255, 255, 0.1);
+                        border-color: #05BBD0;
+                        box-shadow: none;
+                        color: white;
+                    }
+                    .split-card {
+                        background: rgba(15, 12, 41, 0.6);
+                        backdrop-filter: blur(15px);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        border-radius: 20px;
+                        overflow: hidden;
+                        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+                    }
+                    .image-panel {
+                        background-image: url('${process.env.PUBLIC_URL}/suporteHome.jpg');
+                        background-size: cover;
+                        background-position: center;
+                        position: relative;
+                    }
+                    .image-panel::after {
+                        content: '';
+                        position: absolute;
+                        top: 0; left: 0; right: 0; bottom: 0;
+                        background: linear-gradient(to right, rgba(8,5,28,0.2), rgba(8,5,28,0.9));
+                    }
+                `}
+            </style>
+
             <Navbar paginaAtual="cadastro" />
             <ToastMensagem mostrar={toast.mostrar} mensagem={toast.mensagem} tipo={toast.tipo} />
 
-            {/* O main empurra o form para o centro da tela disponível usando Flexbox */}
             <main className="container flex-grow-1 d-flex align-items-center justify-content-center py-5">
                 
-                {/* O Cartão de Vidro - deixei um pouco mais largo (450px) pois tem mais campos */}
-                <div className="login-glass-card mx-auto w-100" style={{ maxWidth: "450px" }}>
+                {/* CARTÃO DUPLO (SPLIT CARD) */}
+                <div className="row split-card mx-auto w-100" style={{ maxWidth: "900px" }}>
                     
-                    {/* Título */}
-                    <div className="mb-4 text-center">
-                        <h2 className="fw-bold text-white mb-0 text-glow">CRIAR CONTA</h2>
-                        <p className="text-light opacity-75 mt-1" style={{ fontSize: "0.9rem" }}>
-                            Preencha os dados abaixo para se cadastrar.
-                        </p>
+                    {/* Metade Esquerda: Imagem */}
+                    <div className="col-md-5 d-none d-md-block image-panel">
+                        {/* A imagem é definida no CSS acima. O gradiente escurece ela na borda para fundir com o form */}
                     </div>
 
-                    <form onSubmit={handleSubmit}>
-
-                        {/* Nome Completo */}
-                        <div className="mb-3 text-start">
-                            <label className="form-label text-light fw-bold mb-1" style={{ fontSize: "0.85rem" }}>Nome Completo</label>
-                            <input type="text"
-                                className={`form-control input-glass ${erros.nome ? "is-invalid border-danger" : ""}`}
-                                name="nome" value={dados.nome} onChange={handleChange} />
-                            {erros.nome && <small className="text-danger mt-1 d-block fw-bold">{erros.nome}</small>}
+                    {/* Metade Direita: Formulário */}
+                    <div className="col-md-7 p-4 p-sm-5 position-relative z-1">
+                        
+                        <div className="mb-4 text-center text-md-start">
+                            <h2 className="fw-bold text-white mb-0 text-glow">CRIAR CONTA</h2>
+                            <p className="text-light opacity-75 mt-1" style={{ fontSize: "0.9rem" }}>
+                                Junte-se ao DeskFlow. É rápido e fácil.
+                            </p>
                         </div>
 
-                        {/* CPF */}
-                        <div className="mb-3 text-start">
-                            <label className="form-label text-light fw-bold mb-1" style={{ fontSize: "0.85rem" }}>CPF</label>
-                            <input type="text"
-                                className={`form-control input-glass ${erros.cpf ? "is-invalid border-danger" : ""}`}
-                                name="cpf" value={dados.cpf} onChange={handleChange} />
-                            {erros.cpf && <small className="text-danger mt-1 d-block fw-bold">{erros.cpf}</small>}
-                        </div>
+                        <form onSubmit={handleSubmit}>
+                            
+                            {/* LINHA 1: Nome e CPF */}
+                            <div className="row">
+                                <div className="col-sm-6 mb-3">
+                                    <div className="input-group">
+                                        <span className="input-group-text glass-icon"><FaUser /></span>
+                                        <input type="text" className={`form-control input-glass-icon ${erros.nome ? "is-invalid" : ""}`}
+                                            name="nome" value={dados.nome} onChange={handleChange} placeholder="Nome Completo" />
+                                    </div>
+                                    {erros.nome && <small className="text-danger fw-bold">{erros.nome}</small>}
+                                </div>
 
-                        {/* Telefone */}
-                        <div className="mb-3 text-start">
-                            <label className="form-label text-light fw-bold mb-1" style={{ fontSize: "0.85rem" }}>Telefone</label>
-                            <input type="text"
-                                className={`form-control input-glass ${erros.telefone ? "is-invalid border-danger" : ""}`}
-                                name="telefone" value={dados.telefone} onChange={handleChange} />
-                            {erros.telefone && <small className="text-danger mt-1 d-block fw-bold">{erros.telefone}</small>}
-                        </div>
+                                <div className="col-sm-6 mb-3">
+                                    <div className="input-group">
+                                        <span className="input-group-text glass-icon"><FaIdCard /></span>
+                                        <input type="text" className={`form-control input-glass-icon ${erros.cpf ? "is-invalid" : ""}`}
+                                            name="cpf" value={dados.cpf} onChange={handleChange} placeholder="CPF" />
+                                    </div>
+                                    {erros.cpf && <small className="text-danger fw-bold">{erros.cpf}</small>}
+                                </div>
+                            </div>
 
-                        {/* Email */}
-                        <div className="mb-3 text-start">
-                            <label className="form-label text-light fw-bold mb-1" style={{ fontSize: "0.85rem" }}>Email</label>
-                            <input type="text"
-                                className={`form-control input-glass ${erros.email ? "is-invalid border-danger" : ""}`}
-                                name="email" value={dados.email} onChange={handleChange} />
-                            {erros.email && <small className="text-danger mt-1 d-block fw-bold">{erros.email}</small>}
-                        </div>
+                            {/* LINHA 2: Telefone e Email */}
+                            <div className="row">
+                                <div className="col-sm-6 mb-3">
+                                    <div className="input-group">
+                                        <span className="input-group-text glass-icon"><FaPhoneAlt /></span>
+                                        <input type="text" className={`form-control input-glass-icon ${erros.telefone ? "is-invalid" : ""}`}
+                                            name="telefone" value={dados.telefone} onChange={handleChange} placeholder="Telefone" />
+                                    </div>
+                                    {erros.telefone && <small className="text-danger fw-bold">{erros.telefone}</small>}
+                                </div>
 
-                        {/* Senha */}
-                        <div className="mb-4 text-start">
-                            <label className="form-label text-light fw-bold mb-1" style={{ fontSize: "0.85rem" }}>Senha</label>
-                            <div className="input-group position-relative">
-                                <input
-                                    type={mostrarSenha ? "text" : "password"}
-                                    className={`form-control input-glass ${erros.senha ? "is-invalid border-danger" : ""}`}
-                                    style={{ paddingRight: "45px" }}
-                                    name="senha" value={dados.senha} onChange={handleChange}
-                                />
-                                {/* Botão de Mostrar/Ocultar Senha */}
-                                <button
-                                    type="button"
-                                    className="btn position-absolute end-0 top-50 translate-middle-y border-0 text-info"
-                                    style={{ zIndex: 10, boxShadow: "none" }}
-                                    onClick={() => setMostrarSenha(!mostrarSenha)}
-                                    tabIndex={-1}
-                                >
-                                    {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+                                <div className="col-sm-6 mb-3">
+                                    <div className="input-group">
+                                        <span className="input-group-text glass-icon"><FaEnvelope /></span>
+                                        <input type="email" className={`form-control input-glass-icon ${erros.email ? "is-invalid" : ""}`}
+                                            name="email" value={dados.email} onChange={handleChange} placeholder="E-mail" />
+                                    </div>
+                                    {erros.email && <small className="text-danger fw-bold">{erros.email}</small>}
+                                </div>
+                            </div>
+
+                            {/* LINHA 3: Senha */}
+                            <div className="mb-4">
+                                <div className="input-group position-relative">
+                                    <span className="input-group-text glass-icon"><FaLock /></span>
+                                    <input type={mostrarSenha ? "text" : "password"}
+                                        className={`form-control input-glass-icon ${erros.senha ? "is-invalid" : ""}`}
+                                        name="senha" value={dados.senha} onChange={handleChange} placeholder="Crie uma senha" 
+                                        style={{ paddingRight: "45px" }} />
+                                    
+                                    <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 text-info"
+                                        style={{ zIndex: 10 }} onClick={() => setMostrarSenha(!mostrarSenha)} tabIndex={-1}>
+                                        {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
+                                {erros.senha && <small className="text-danger fw-bold">{erros.senha}</small>}
+                            </div>
+
+                            {/* Botão de Enviar */}
+                            <div className="d-grid mt-2">
+                                <button type="submit" className="btn-login py-2 fs-5 d-flex justify-content-center align-items-center" disabled={carregando}>
+                                    <FaSave className="me-2" />
+                                    {carregando ? "Criando conta..." : "CADASTRAR"}
                                 </button>
                             </div>
-                            {erros.senha && <small className="text-danger mt-1 d-block fw-bold">{erros.senha}</small>}
-                        </div>
 
-                        {/* Botão de Enviar */}
-                        <div className="d-grid mt-2">
-                            <button type="submit" className="btn-login" disabled={carregando}>
-                                <FaSave className="me-2" />
-                                {carregando ? "Criando conta..." : "CRIAR CONTA"}
-                            </button>
-                        </div>
+                        </form>
 
-                    </form>
+                        <p className="text-center mt-4 mb-0" style={{ color: "var(--texto-claro)", fontSize: "0.95rem" }}>
+                            Já tem conta?{" "}
+                            <Link to="/login" style={{ color: "#05BBD0", fontWeight: "bold", textDecoration: "none" }}>
+                                Fazer Login
+                            </Link>
+                        </p>
 
-                    {/* Link para Login */}
-                    <p className="text-center mt-4 mb-0" style={{ color: "var(--texto-claro)", fontSize: "0.9rem" }}>
-                        Já tem conta?{" "}
-                        <Link to="/login" style={{ color: "#05BBD0", fontWeight: "bold", textDecoration: "none" }}>
-                            Entrar
-                        </Link>
-                    </p>
-
+                    </div>
                 </div>
             </main>
 

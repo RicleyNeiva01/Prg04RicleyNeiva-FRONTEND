@@ -629,3 +629,46 @@ td .btn { margin: 2px; }
         padding: 8px 6px;
     }
 }
+
+/* =========================================
+   ADICIONAL: MODAL GLASS 2 COLUNAS
+========================================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 5, 28, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    padding: 20px;
+}
+
+.modal-glass-card {
+    background: rgba(29, 22, 77, 0.95);
+    border: 1px solid rgba(5, 187, 208, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(5, 187, 208, 0.15);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 750px; /* Largura ideal para o formulário de 2 colunas */
+    padding: 35px;
+    color: var(--branco);
+    animation: modalConfirmacao 0.3s ease; /* Usando a animação que você já tem */
+}
+
+.fechar-modal {
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.fechar-modal:hover {
+    color: #ff4d6d;
+    transform: scale(1.1);
+}

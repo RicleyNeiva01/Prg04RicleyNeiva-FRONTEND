@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FaSave, FaTimes } from "react-icons/fa";
 
 function FormularioCategoria({ fechar, aoSalvar, categoria }) {
-
     const [dadosFormulario, setDadosFormulario] = useState({
         nome: "",
         descricao: ""
@@ -11,15 +10,12 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
     const [erros, setErros] = useState({});
 
     useEffect(() => {
-
         if (categoria) {
             setDadosFormulario(categoria);
         }
-
     }, [categoria]);
 
     function handleChange(e) {
-
         const { name, value } = e.target;
 
         setDadosFormulario({
@@ -36,7 +32,6 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
     }
 
     function validarFormulario() {
-
         const novosErros = {};
 
         if (!dadosFormulario.nome.trim()) {
@@ -52,12 +47,10 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
         }
 
         setErros(novosErros);
-
         return Object.keys(novosErros).length === 0;
     }
 
     function handleSubmit(e) {
-
         e.preventDefault();
 
         if (!validarFormulario()) {
@@ -68,74 +61,52 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
     }
 
     return (
+        <form className="form-modal text-start" onSubmit={handleSubmit}>
 
-        <form className="form-modal" onSubmit={handleSubmit}>
-
-            <div className="mb-3">
-
-                <label className="form-label">
-                    Nome
-                </label>
-
-                <input
-                    type="text"
-                    className={`form-control ${erros.nome ? "is-invalid" : ""}`}
-                    name="nome"
-                    value={dadosFormulario.nome}
-                    onChange={handleChange}
-                />
-
-                {erros.nome && (
-                    <small className="erro-formulario">
-                        {erros.nome}
-                    </small>
-                )}
-
+            {/* Primeira Linha: Nome */}
+            <div className="row">
+                <div className="col-12 mb-3">
+                    <label className="form-label">Nome</label>
+                    <input
+                        type="text"
+                        className={`form-control input-glass ${erros.nome ? "is-invalid" : ""}`}
+                        name="nome"
+                        placeholder="Ex: Hardware, Software, Rede..."
+                        value={dadosFormulario.nome}
+                        onChange={handleChange}
+                    />
+                    {erros.nome && <small className="erro-formulario">{erros.nome}</small>}
+                </div>
             </div>
 
-            <div className="mb-4">
-
-                <label className="form-label">
-                    Descrição
-                </label>
-
-                <textarea
-                    className={`form-control ${erros.descricao ? "is-invalid" : ""}`}
-                    name="descricao"
-                    rows="4"
-                    value={dadosFormulario.descricao}
-                    onChange={handleChange}
-                />
-
-                {erros.descricao && (
-                    <small className="erro-formulario">
-                        {erros.descricao}
-                    </small>
-                )}
-
+            {/* Segunda Linha: Descrição */}
+            <div className="row">
+                <div className="col-12 mb-4">
+                    <label className="form-label">Descrição</label>
+                    <textarea
+                        className={`form-control input-glass ${erros.descricao ? "is-invalid" : ""}`}
+                        name="descricao"
+                        rows="4"
+                        placeholder="Descreva o propósito dessa categoria..."
+                        value={dadosFormulario.descricao}
+                        onChange={handleChange}
+                    />
+                    {erros.descricao && <small className="erro-formulario">{erros.descricao}</small>}
+                </div>
             </div>
 
-            <div className="acoes-formulario">
-
-                <button
-                    type="button"
-                    className="btn btn-cancelar"
-                    onClick={fechar}
-                >
+            {/* Botões de Ação */}
+            <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
-
-                <button
-                    type="submit"
-                    className="btn btn-custom"
-                >
+                
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
                     <FaSave className="me-2" /> Salvar
                 </button>
-
             </div>
 
         </form>
-
     );
 }
 
