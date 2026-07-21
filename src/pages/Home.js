@@ -10,7 +10,7 @@ function Home() {
 
     return (
         <div className="d-flex flex-column min-vh-100 position-relative" style={{ background: "linear-gradient(135deg, #08051C 0%, #15103A 100%)", color: "#F8F9FA", overflowX: "hidden" }}>
-            
+
             {/* INJEÇÃO DE ESTILOS CSS DA HOME */}
             <style>
                 {`
@@ -19,13 +19,16 @@ function Home() {
                         -webkit-background-clip: text;
                         -webkit-text-fill-color: transparent;
                         font-weight: 800;
-                        font-size: 3rem;
+                        font-size: 3.5rem;
                         letter-spacing: -1px;
-                        margin-bottom: 0.5rem;
+                        line-height: 1.1;
+                        margin-bottom: 1rem;
                     }
                     
-                    @media (max-width: 768px) {
-                        .hero-title { font-size: 2.2rem; }
+                    @media (max-width: 992px) {
+                        .hero-title { font-size: 2.5rem; text-align: center; }
+                        .hero-text-container { text-align: center !important; }
+                        .hero-buttons { justify-content: center !important; }
                     }
 
                     .hero-subtitle {
@@ -71,14 +74,26 @@ function Home() {
                     /* Efeito de brilho de fundo */
                     .bg-glow {
                         position: absolute;
-                        width: 600px;
-                        height: 600px;
-                        background: radial-gradient(circle, rgba(5,187,208,0.15) 0%, rgba(0,0,0,0) 70%);
-                        top: -150px;
-                        left: 50%;
-                        transform: translateX(-50%);
+                        width: 700px;
+                        height: 700px;
+                        background: radial-gradient(circle, rgba(5,187,208,0.12) 0%, rgba(0,0,0,0) 60%);
+                        top: -100px;
+                        right: -200px;
                         z-index: 0;
                         pointer-events: none;
+                    }
+
+                    /* Animação da imagem flutuando */
+                    @keyframes float {
+                        0% { transform: translateY(0px); }
+                        50% { transform: translateY(-20px); }
+                        100% { transform: translateY(0px); }
+                    }
+                    .floating-img {
+                        animation: float 6s ease-in-out infinite;
+                        max-width: 100%;
+                        height: auto;
+                        filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
                     }
                 `}
             </style>
@@ -89,35 +104,54 @@ function Home() {
             <div className="bg-glow"></div>
 
             {/* HERO SECTION */}
-            <header className="text-center position-relative z-1" style={{ padding: "100px 20px 80px 20px" }}>
-                <h1 className="hero-title">
-                    DeskFlow IT Support
-                </h1>
-                <p className="hero-subtitle mt-3 mx-auto" style={{ maxWidth: "650px" }}>
-                    Registre, acompanhe e resolva chamados relacionados a computadores,
-                    sistemas e redes de forma simples, ágil e visualmente incrível.
-                </p>
-                
-                <div className="mt-5">
-                    {logado ? (
-                        <Link to="/painel" className="btn-neon-primary fw-bold d-inline-block">
-                            ➔ Acessar meu Painel
-                        </Link>
-                    ) : (
-                        <div className="d-flex gap-3 justify-content-center flex-wrap">
-                            <Link to="/login" className="btn-neon-primary fw-bold d-inline-block">
-                                Entrar na Plataforma
-                            </Link>
-                            <Link to="/cadastro" className="btn-glass-secondary fw-bold d-inline-block">
-                                Criar minha conta
-                            </Link>
+            <header className="position-relative z-1 d-flex align-items-center" style={{ minHeight: "80vh", paddingTop: "80px" }}>
+                <div className="container">
+                    <div className="row align-items-center">
+
+                        {/* Coluna da Esquerda (Textos) */}
+                        <div className="col-lg-6 hero-text-container text-start mb-5 mb-lg-0">
+                            <h1 className="hero-title">
+                                Inteligência e agilidade para o seu Suporte de TI.
+                            </h1>
+                            <p className="hero-subtitle mt-3 mb-5" style={{ maxWidth: "600px" }}>
+                                O **DeskFlow** transforma a maneira como sua empresa resolve problemas de tecnologia.
+                                Registre, acompanhe e atribua chamados de forma simples e visualmente incrível.
+                            </p>
+
+                            <div className="d-flex gap-3 hero-buttons flex-wrap">
+                                {logado ? (
+                                    <Link to="/painel" className="btn-neon-primary fw-bold">
+                                        ➔ Acessar meu Painel
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link to="/login" className="btn-neon-primary fw-bold">
+                                            Entrar na Plataforma
+                                        </Link>
+                                        <Link to="/cadastro" className="btn-glass-secondary fw-bold">
+                                            Criar minha conta
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    )}
+
+                        {/* Coluna da Direita (Imagem) */}
+                        <div className="col-lg-6 d-none d-md-block text-center z-2">
+                            <img
+                                src={`${process.env.PUBLIC_URL}/suporteHome.jpg`}
+                                alt="Imagem de Suporte Técnico"
+                                className="floating-img"
+                                style={{ maxHeight: "500px", objectFit: "contain" }}
+                            />
+                        </div>
+
+                    </div>
                 </div>
             </header>
 
             {/* CONTEÚDO PRINCIPAL (Features e Serviços) */}
-            <main className="container flex-grow-1 pb-5 position-relative z-1">
+            <main className="container flex-grow-1 pb-5 position-relative z-1" style={{ marginTop: "-30px" }}>
                 <Funcionalidades />
                 <Servicos />
             </main>
