@@ -595,23 +595,34 @@ td .btn { margin: 2px; }
    10. RESPONSIVO (MOBILE)
 ========================================= */
 @media (max-width: 768px) {
+    /* Ajustes gerais de fonte que você já tinha... */
     h1 { font-size: 1.8rem; }
     h2 { font-size: 1.3rem; }
     
-    .modal-usuario {
-        width: 100%;
-        padding: 16px !important;
-        border-radius: 12px;
-        max-height: calc(100vh - 20px);
+    /* Ajusta o padding do modal para sobrar mais espaço no celular */
+    .modal-glass-card {
+        padding: 20px !important;
+        max-height: 95vh; /* Aproveita quase toda a tela no celular */
     }
     
     .form-modal { gap: 8px; }
     .form-modal input, .form-modal select { font-size: 16px; }
     .titulo-pagina { font-size: 1.3rem; }
     
-    .acoes-formulario { display: flex; gap: 10px; }
-    .acoes-formulario .btn { flex: 1; max-width: none; }
+    /* EMPILHA OS BOTÕES NO MOBILE (Salvar em cima, Cancelar embaixo) */
+    .acoes-formulario { 
+        display: flex; 
+        flex-direction: column-reverse; /* Inverte a ordem padrão do flex */
+        gap: 12px; 
+    }
     
+    .acoes-formulario .btn { 
+        width: 100%; /* Botões ocupam a largura inteira da tela */
+        max-width: none;
+        padding: 12px; /* Deixa o botão mais "clicável" com o dedo */
+    }
+    
+    /* O resto do seu CSS mobile de tabelas continua igual abaixo... */
     .btn-pesquisar-mobile {
         padding: 8px 12px !important;
         font-size: 0.8rem !important;
@@ -652,10 +663,16 @@ td .btn { margin: 2px; }
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(5, 187, 208, 0.15);
     border-radius: 20px;
     width: 100%;
-    max-width: 750px; /* Largura ideal para o formulário de 2 colunas */
+    max-width: 750px;
     padding: 35px;
     color: var(--branco);
-    animation: modalConfirmacao 0.3s ease; /* Usando a animação que você já tem */
+    animation: modalConfirmacao 0.3s ease;
+    
+    /* NOVAS REGRAS PARA NÃO CORTAR NO MOBILE */
+    max-height: 90vh; /* O modal nunca será maior que 90% da altura da tela */
+    overflow-y: auto; /* Cria uma barra de rolagem se o conteúdo for muito grande */
+    display: flex;
+    flex-direction: column;
 }
 
 .fechar-modal {
