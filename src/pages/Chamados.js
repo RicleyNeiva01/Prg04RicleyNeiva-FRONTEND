@@ -9,6 +9,7 @@ import ModalAtribuirTecnico from "../components/ModalAtribuirTecnico";
 import ModalComentarios from "../components/ModalComentarios";
 import ModalAtendimento from "../components/ModalAtendimento";
 import useAuth from "../hooks/useAuth";
+import { FaSearch, FaTicketAlt } from "react-icons/fa";
 
 import {
     listarChamados,
@@ -39,6 +40,10 @@ function Chamados() {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [mostrarModalAtendimento, setMostrarModalAtendimento] = useState(false);
     const [chamadoAtendimento, setChamadoAtendimento] = useState(null);
+
+    const abertos = chamados.filter((chamado) => chamado.status === "ABERTO").length;
+    const emAndamento = chamados.filter((chamado) => chamado.status === "EM_ANDAMENTO").length;
+    const resolvidos = chamados.filter((chamado) => chamado.status === "RESOLVIDO").length;
 
     const carregarChamados = useCallback(async () => {
         try {
@@ -185,7 +190,26 @@ function Chamados() {
                     )}
                 </div>
 
-                <div className="mb-4">
+                <div className="tecnicos-hero glass-card mb-4 p-4">
+                    <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                        <div className="d-flex align-items-center gap-3">
+                            <div className="hero-icon-badge">
+                                <FaTicketAlt />
+                            </div>
+                            <div>
+                                <h4 className="mb-1">Painel premium de chamados</h4>
+                                <p className="mb-0">Organize e acompanhe os tickets com mais clareza e elegância.</p>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <span className="chip chip-cyan">Abertos: {abertos}</span>
+                            <span className="chip chip-violet">Andamento: {emAndamento}</span>
+                            <span className="chip chip-cyan">Resolvidos: {resolvidos}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="tecnicos-search glass-card p-3 mb-4">
                     <div className="d-flex gap-2 mb-2 flex-wrap flex-md-nowrap align-items-center">
                         <select
                             className="form-select w-auto"
@@ -202,23 +226,28 @@ function Chamados() {
                             <option value="RESOLVIDO">Resolvido</option>
                         </select>
 
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Pesquisar por título..."
-                            value={tituloBusca}
-                            onChange={(e) => {
-                                const valor = e.target.value;
-                                setTituloBusca(valor);
-                                if (valor.trim() === "") {
-                                    setPaginaAtual(0);
-                                    carregarChamados();
-                                }
-                            }}
-                            onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
-                        />
-                        <button className="btn btn-custom px-4 btn-pesquisar-mobile" onClick={handlePesquisar}>
-                            🔍 Pesquisar
+                        <div className="input-group flex-grow-1">
+                            <span className="input-group-text">
+                                <FaSearch />
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Pesquisar por título..."
+                                value={tituloBusca}
+                                onChange={(e) => {
+                                    const valor = e.target.value;
+                                    setTituloBusca(valor);
+                                    if (valor.trim() === "") {
+                                        setPaginaAtual(0);
+                                        carregarChamados();
+                                    }
+                                }}
+                                onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
+                            />
+                        </div>
+                        <button className="btn btn-custom px-4" onClick={handlePesquisar}>
+                            Pesquisar
                         </button>
                     </div>
                 </div>

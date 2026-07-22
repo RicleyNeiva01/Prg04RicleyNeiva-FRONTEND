@@ -5,7 +5,7 @@ import Tabela from "../components/Tabela";
 import ModalUsuario from "../components/ModalUsuario";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
-import { FaUndo } from "react-icons/fa"; // <-- IMPORTAMOS O ÍCONE AQUI
+import { FaUndo, FaSearch, FaUsers } from "react-icons/fa";
 
 import {
     listarUsuarios,
@@ -35,6 +35,9 @@ function Usuarios() {
     // Novos Estados do Modal de Reativação
     const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
     const [idReativar, setIdReativar] = useState(null);
+
+    const ativos = usuarios.filter((usuario) => usuario.ativo).length;
+    const inativos = usuarios.filter((usuario) => !usuario.ativo).length;
 
     const carregarUsuarios = useCallback(async () => {
         try {
@@ -172,24 +175,47 @@ function Usuarios() {
                     </button>
                 </div>
 
-                <div className="mb-4">
-                    <div className="d-flex gap-2 mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Pesquisar por nome..."
-                            value={nomeBusca}
-                            onChange={(e) => {
-                                setNomeBusca(e.target.value);
-                                if (e.target.value === "") {
-                                    setPaginaAtual(0);
-                                    carregarUsuarios();
-                                }
-                            }}
-                            onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}   
-                        />
-                        <button className="btn btn-custom px-4 btn-pesquisar-mobile" onClick={handlePesquisar}>
-                            🔍 Pesquisar
+                <div className="tecnicos-hero glass-card mb-4 p-4">
+                    <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                        <div className="d-flex align-items-center gap-3">
+                            <div className="hero-icon-badge">
+                                <FaUsers />
+                            </div>
+                            <div>
+                                <h4 className="mb-1">Painel premium de usuários</h4>
+                                <p className="mb-0">Acompanhe os acessos da plataforma com uma experiência mais elegante.</p>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <span className="chip chip-cyan">Ativos: {ativos}</span>
+                            <span className="chip chip-violet">Inativos: {inativos}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="tecnicos-search glass-card p-3 mb-4">
+                    <div className="d-flex flex-column flex-md-row gap-2 mb-3">
+                        <div className="input-group">
+                            <span className="input-group-text">
+                                <FaSearch />
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Pesquisar por nome..."
+                                value={nomeBusca}
+                                onChange={(e) => {
+                                    setNomeBusca(e.target.value);
+                                    if (e.target.value === "") {
+                                        setPaginaAtual(0);
+                                        carregarUsuarios();
+                                    }
+                                }}
+                                onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
+                            />
+                        </div>
+                        <button className="btn btn-custom px-4" onClick={handlePesquisar}>
+                            Pesquisar
                         </button>
                     </div>
                     <div className="form-check text-start ms-1">

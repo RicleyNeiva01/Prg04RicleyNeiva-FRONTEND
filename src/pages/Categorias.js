@@ -5,6 +5,7 @@ import TabelaCategoria from "../components/TabelaCategoria";
 import ModalCategoria from "../components/ModalCategoria";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { FaSearch, FaTags } from "react-icons/fa";
 
 import {
     listarCategorias,
@@ -146,27 +147,48 @@ function Categorias() {
                     </button>
                 </div>
 
-                <div className="d-flex gap-2 mb-4">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Pesquisar por nome..."
-                        value={nomeBusca}
-                        onChange={(e) => {
-                            setNomeBusca(e.target.value);
-                            if (e.target.value === "") {
-                                setPaginaAtual(0);
-                                carregarCategorias();
-                            }
-                        }}
-                        onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
-                    />
-                    <button
-                        className="btn btn-custom px-4 btn-pesquisar-mobile"
-                        onClick={handlePesquisar}
-                    >
-                        🔍 Pesquisar
-                    </button>
+                <div className="tecnicos-hero glass-card mb-4 p-4">
+                    <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                        <div className="d-flex align-items-center gap-3">
+                            <div className="hero-icon-badge">
+                                <FaTags />
+                            </div>
+                            <div>
+                                <h4 className="mb-1">Painel premium de categorias</h4>
+                                <p className="mb-0">Organize e acompanhe os tipos de atendimento com mais elegância.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="tecnicos-search glass-card p-3 mb-4">
+                    <div className="d-flex flex-column flex-md-row gap-2 mb-3">
+                        <div className="input-group">
+                            <span className="input-group-text">
+                                <FaSearch />
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Pesquisar por nome..."
+                                value={nomeBusca}
+                                onChange={(e) => {
+                                    setNomeBusca(e.target.value);
+                                    if (e.target.value === "") {
+                                        setPaginaAtual(0);
+                                        carregarCategorias();
+                                    }
+                                }}
+                                onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
+                            />
+                        </div>
+                        <button
+                            className="btn btn-custom px-4"
+                            onClick={handlePesquisar}
+                        >
+                            Pesquisar
+                        </button>
+                    </div>
                 </div>
 
                 <TabelaCategoria

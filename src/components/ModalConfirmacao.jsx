@@ -8,66 +8,44 @@ function ModalConfirmacao({
     titulo,
     mensagem,
     observacao,
-    // Novas props para customizar o botão de confirmação
-    textoBotaoConfirmar = "Excluir", 
+    textoBotaoConfirmar = "Excluir",
     iconeBotaoConfirmar = <FaTrashAlt className="me-2" />,
-    classeBotaoConfirmar = "btn-excluir" 
+    classeBotaoConfirmar = "btn-excluir"
 }) {
     if (!mostrar) return null;
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,.6)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999
-            }}
-            onClick={fechar}
-        >
+        <div className="modal-overlay" onClick={fechar}>
             <div
-                className="modal-confirmacao"
+                className="modal-glass-card text-center"
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                    width: "470px",
-                    maxWidth: "95%",
-                    background: "#1D164D",
-                    border: "1px solid #05BBD0",
-                    borderRadius: "20px",
-                    padding: "30px",
-                    color: "white",
-                    boxShadow: "0 15px 45px rgba(0,0,0,.45)"
-                }}
+                style={{ width: "470px", maxWidth: "95%", padding: "30px" }}
             >
-                <div className="text-center mb-4">
+                <div className="mb-4">
                     <FaExclamationTriangle size={45} style={{ color: "#FFC107", marginBottom: "15px" }} />
-                    <h3 style={{ color: "#20D6F7", margin: 0 }}>
+                    <h3 className="titulo-pagina mb-0" style={{ fontSize: "1.25rem" }}>
                         {titulo}
                     </h3>
                 </div>
 
                 <div className="text-center">
-                    <p style={{ fontSize: "17px", marginBottom: "10px" }}>
+                    <p className="mb-2" style={{ fontSize: "17px", color: "#F2F2F2" }}>
                         {mensagem}
                     </p>
 
-                    <small style={{ color: "#BFC7D5" }}>
+                    <small className="texto-ajuda">
                         {observacao}
                     </small>
                 </div>
 
                 <div className="d-flex justify-content-center gap-3 mt-4">
                     <button
-                        className="btn-cancelar d-flex align-items-center px-4"
+                        className="btn btn-cancelar d-flex align-items-center px-4"
                         onClick={fechar}
                     >
                         <FaTimes className="me-2" /> Cancelar
                     </button>
 
-                    {/* Botão de confirmar agora é dinâmico! */}
                     <button
                         className={`${classeBotaoConfirmar} d-flex align-items-center px-4`}
                         onClick={aoConfirmar}

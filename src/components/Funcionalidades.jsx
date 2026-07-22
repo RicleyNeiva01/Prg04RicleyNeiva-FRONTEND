@@ -1,35 +1,38 @@
-function Funcionalidades(){
-    return(
+import React from 'react';
+import { FaBug, FaClock, FaCheckCircle } from 'react-icons/fa';
+
+function Funcionalidades() {
+    const itens = [
+        {
+            icon: <FaBug />,
+            titulo: 'Cadastro de problemas',
+            texto: 'Usuários registram incidentes de forma simples e rápida, com organização desde o início.'
+        },
+        {
+            icon: <FaClock />,
+            titulo: 'Acompanhamento',
+            texto: 'O usuário acompanha o status do chamado em tempo real e acompanha a evolução.'
+        },
+        {
+            icon: <FaCheckCircle />,
+            titulo: 'Resolução',
+            texto: 'Técnicos registram soluções aplicadas e fecham o ciclo com mais clareza.'
+        }
+    ];
+
+    return (
         <section className="mb-5">
-            <h2 className="text-center mb-4">Funcionalidades</h2>
-            <div className="row g-3">
-
-                <div className="col-md-4">
-                    <div className="card h-100">
-                        <div className="card-body text-center">
-                                <h5>Cadastro de Problemas</h5>
-                                <p className="card-text">Usuários podem registrar problemas em computadores e redes.</p>
+            <h2 className="text-center mb-4 section-title">Funcionalidades</h2>
+            <div className="row g-4">
+                {itens.map((item, index) => (
+                    <div className="col-md-4" key={index}>
+                        <div className="premium-card h-100 text-center">
+                            <div className="feature-icon">{item.icon}</div>
+                            <h5 className="mb-3" style={{ color: '#fff' }}>{item.titulo}</h5>
+                            <p className="section-text mb-0">{item.texto}</p>
                         </div>
                     </div>
-                </div>
-       
-                <div className="col-md-4">
-                    <div className="card h-100">
-                        <div className="card-body text-center">
-                            <h5>Acompanhamento</h5>
-                            <p className="card-text">Permissaõ para o usuário verificar o status do seu chamado.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-md-4">
-                    <div className="card h-100">
-                        <div className="card-body text-center">
-                            <h5>Resolução</h5>
-                            <p className="card-text">Técnicos registram as soluções aplicadas aos problemas.</p>
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
         </section>
     );

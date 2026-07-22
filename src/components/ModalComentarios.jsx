@@ -5,14 +5,14 @@ import {
     excluirComentario
 } from "../services/comentarioService";
 import ModalConfirmacao from "./ModalConfirmacao";
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaTrashAlt, FaComments, FaPaperPlane } from 'react-icons/fa';
 import useAuth from "../hooks/useAuth";
 
 function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
     const { usuario, isAdmin } = useAuth();
 
     const [comentarios, setComentarios] = useState([]);
-    const [mensagem, setMensagem] = useState("");   
+    const [mensagem, setMensagem] = useState("");
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [comentarioExcluir, setComentarioExcluir] = useState(null);
 
@@ -35,7 +35,7 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
 
     async function handleSalvarComentario() {
         if (mensagem.trim() === "") return;
-    
+
         try {
             const comentario = {
                 mensagem: mensagem,
@@ -70,116 +70,79 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
 
     return (
         <div
-            style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,.7)",
-                backdropFilter: "blur(3px)", // Efeito de desfoque no fundo
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999,
-                padding: "20px"
-            }}
+            className="modal-overlay"
             onClick={fechar}
         >
-            {/* Injeção de estilos para scrollbar e input focus */}
-            <style>
-                {`
-                    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-                    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-                    .custom-scrollbar::-webkit-scrollbar-thumb { background: #05BBD0; border-radius: 10px; }
-                    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #0498a8; }
-                    .glow-input:focus {
-                        outline: none !important;
-                        box-shadow: 0 0 10px rgba(5, 187, 208, 0.5) !important;
-                        border-color: #05BBD0 !important;
-                        background: rgba(255, 255, 255, 0.1) !important;
-                    }
-                `}
-            </style>
-
             <div
-                className="shadow-lg custom-scrollbar"
-                style={{
-                    background: "linear-gradient(145deg, #1D164D 0%, #15103A 100%)",
-                    border: "1px solid #05BBD0",
-                    borderRadius: "15px",
-                    padding: "30px",
-                    color: "white",
-                    width: "750px",
-                    maxWidth: "100%",
-                    maxHeight: "85vh",
-                    display: "flex",
-                    flexDirection: "column",
-                }}
+                className="modal-glass-card custom-scrollbar text-start"
+                style={{ width: "780px", maxWidth: "95%", maxHeight: "88vh" }}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* CABEÇALHO */}
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h3 className="mb-0" style={{ color: "#05BBD0", fontWeight: "600" }}>💬 Comentários</h3>
-                    <button
-                        onClick={fechar}
-                        style={{
-                            border: "none",
-                            background: "transparent",
-                            color: "#fff",
-                            fontSize: "28px",
-                            lineHeight: "1",
-                            cursor: "pointer",
-                            opacity: "0.7",
-                            transition: "0.2s"
-                        }}
-                        onMouseOver={(e) => (e.target.style.opacity = "1")}
-                        onMouseOut={(e) => (e.target.style.opacity = "0.7")}
-                    >
-                        ×
+                <div className="modal-header-custom d-flex justify-content-between align-items-center mb-4">
+                    <div className="d-flex align-items-center gap-2">
+                        <div className="hero-icon-badge" style={{ width: "42px", height: "42px" }}>
+                            <FaComments />
+                        </div>
+                        <div>
+                            <h3 className="titulo-pagina m-0" style={{ fontSize: "1.25rem" }}>
+                                Comentários do chamado
+                            </h3>
+                            <p className="mb-0 texto-ajuda">Histórico e troca de mensagens</p>
+                        </div>
+                    </div>
+                    <button className="fechar-modal" onClick={fechar} title="Fechar">
+                        &times;
                     </button>
                 </div>
 
-                <div className="mb-3 d-flex justify-content-between align-items-center bg-dark p-3 rounded" style={{ background: "rgba(0,0,0,0.2) !important", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <div>
-                        <h5 className="mb-1 text-white">{chamado?.titulo}</h5>
-                        <small style={{ color: "#A09EBD" }}>ID do Chamado: #{chamado?.id}</small>
+                <div className="p-3 rounded-4 mb-4" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
+                        <div>
+                            <h4 className="fw-bold mb-2 text-white" style={{ fontSize: "1.15rem" }}>
+                                {chamado?.titulo}
+                            </h4>
+                            <div className="d-flex flex-wrap gap-2 mt-2">
+                                <span className="chip chip-cyan">Chamado #{chamado?.id}</span>
+                                <span className="chip chip-violet">{chamado?.categoria?.nome || "Suporte Geral"}</span>
+                            </div>
+                        </div>
+
+                        {isResolvido && (
+                            <span className="badge rounded-pill" style={{ backgroundColor: "rgba(40, 167, 69, 0.15)", color: "#6EE7B7", border: "1px solid rgba(40, 167, 69, 0.3)", padding: "8px 12px" }}>
+                                Resolvido
+                            </span>
+                        )}
                     </div>
-                    {isResolvido && (
-                        <span className="badge" style={{ backgroundColor: "rgba(25, 135, 84, 0.2)", color: "#28a745", border: "1px solid #28a745", padding: "8px 12px", fontSize: "14px" }}>
-                            Resolvido
-                        </span>
-                    )}
                 </div>
 
-                <hr style={{ borderColor: "rgba(255,255,255,0.1)" }} />
-
-                {/* ÁREA DE COMENTÁRIOS COM SCROLL */}
-                <div className="custom-scrollbar" style={{ overflowY: "auto", flexGrow: 1, paddingRight: "10px", display: "flex", flexDirection: "column", gap: "15px", marginBottom: "20px" }}>
+                <div className="custom-scrollbar" style={{ overflowY: "auto", flexGrow: 1, paddingRight: "8px", display: "flex", flexDirection: "column", gap: "14px", marginBottom: "18px" }}>
                     {comentarios.length === 0 ? (
-                        <div className="text-center py-5">
-                            <h5 style={{ color: "#A09EBD" }}>Nenhum comentário ainda.</h5>
-                            <p style={{ color: "#6c757d" }}>Seja o primeiro a comentar neste chamado!</p>
+                        <div className="text-center py-5 rounded-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.12)" }}>
+                            <h5 className="text-white mb-2">Nenhum comentário ainda.</h5>
+                            <p className="mb-0 texto-ajuda">Seja o primeiro a comentar neste chamado.</p>
                         </div>
                     ) : (
                         comentarios.map((comentario) => {
                             const isMeuComentario = comentario.usuario?.id === usuario?.id;
-                            
+
                             return (
                                 <div key={comentario.id} style={{ display: "flex", justifyContent: isMeuComentario ? "flex-end" : "flex-start" }}>
                                     <div
                                         style={{
-                                            background: isMeuComentario ? "rgba(5, 187, 208, 0.15)" : "rgba(255, 255, 255, 0.05)",
-                                            border: isMeuComentario ? "1px solid rgba(5, 187, 208, 0.5)" : "1px solid rgba(255, 255, 255, 0.1)",
-                                            borderRadius: isMeuComentario ? "15px 15px 0 15px" : "15px 15px 15px 0",
-                                            padding: "15px",
-                                            maxWidth: "85%",
+                                            background: isMeuComentario ? "rgba(5, 187, 208, 0.14)" : "rgba(255, 255, 255, 0.05)",
+                                            border: isMeuComentario ? "1px solid rgba(5, 187, 208, 0.35)" : "1px solid rgba(255, 255, 255, 0.1)",
+                                            borderRadius: isMeuComentario ? "16px 16px 0 16px" : "16px 16px 16px 0",
+                                            padding: "14px 15px",
+                                            maxWidth: "86%",
                                             position: "relative",
-                                            opacity: isResolvido ? 0.8 : 1
+                                            opacity: isResolvido ? 0.9 : 1
                                         }}
                                     >
                                         <div className="d-flex justify-content-between align-items-center mb-2 gap-3">
                                             <strong style={{ color: isMeuComentario ? "#05BBD0" : "#E2E2E2" }}>
                                                 {isMeuComentario ? "Você" : comentario.usuario?.nome}
                                             </strong>
-                                            
+
                                             <div className="d-flex align-items-center gap-2">
                                                 <small style={{ color: "#A09EBD", fontSize: "0.75rem" }}>
                                                     {new Date(comentario.dataComentario).toLocaleString("pt-BR", {
@@ -192,17 +155,8 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
                                                             setComentarioExcluir(comentario.id);
                                                             setMostrarConfirmacao(true);
                                                         }}
-                                                        style={{
-                                                            background: "transparent",
-                                                            border: "none",
-                                                            color: "#dc3545",
-                                                            padding: "0",
-                                                            cursor: "pointer",
-                                                            opacity: "0.7",
-                                                            transition: "0.2s"
-                                                        }}
-                                                        onMouseOver={(e) => (e.target.style.opacity = "1")}
-                                                        onMouseOut={(e) => (e.target.style.opacity = "0.7")}
+                                                        className="btn btn-link p-0"
+                                                        style={{ color: "#FF7B7B", textDecoration: "none" }}
                                                         title="Excluir comentário"
                                                     >
                                                         <FaTrashAlt size={14} />
@@ -220,42 +174,35 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
                     )}
                 </div>
 
-                {/* ÁREA DE INPUT DE NOVO COMENTÁRIO */}
                 {isResolvido ? (
                     <div className="mt-auto">
-                        <div className="p-3 rounded text-center mb-3" style={{ background: "rgba(5, 187, 208, 0.1)", border: "1px solid #05BBD0", color: "#05BBD0" }}>
-                            🔒 <strong>Chamado Fechado:</strong> Este histórico é apenas para leitura.
+                        <div className="p-3 rounded-4 text-center mb-3" style={{ background: "rgba(5, 187, 208, 0.1)", border: "1px solid rgba(5, 187, 208, 0.3)", color: "#05BBD0" }}>
+                            <strong>Chamado fechado:</strong> este histórico é somente leitura.
                         </div>
                         <div className="d-flex justify-content-end">
-                            <button className="btn btn-secondary px-4 py-2" onClick={fechar} style={{ borderRadius: "8px" }}>Fechar</button>
+                            <button className="btn btn-cancelar px-4 py-2" onClick={fechar}>Fechar</button>
                         </div>
                     </div>
                 ) : (
-                    <div className="mt-auto p-3 rounded" style={{ background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="mt-auto p-3 rounded-4" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
                         <textarea
-                            className="form-control text-white glow-input custom-scrollbar"
-                            rows="2"
+                            className="form-control input-glass custom-scrollbar"
+                            rows="3"
                             placeholder="Escreva sua mensagem aqui..."
                             value={mensagem}
                             onChange={(e) => setMensagem(e.target.value)}
-                            style={{
-                                background: "rgba(255, 255, 255, 0.05)",
-                                border: "1px solid rgba(255, 255, 255, 0.2)",
-                                borderRadius: "8px",
-                                resize: "none"
-                            }}
+                            style={{ resize: "none" }}
                         />
                         <div className="d-flex justify-content-end mt-3 gap-2">
-                            <button className="btn btn-secondary px-4" onClick={fechar} style={{ borderRadius: "8px" }}>
+                            <button className="btn btn-cancelar px-4" onClick={fechar}>
                                 Cancelar
                             </button>
                             <button
-                                className="btn btn-custom px-4"
+                                className="btn btn-custom px-4 d-flex align-items-center justify-content-center"
                                 onClick={handleSalvarComentario}
                                 disabled={!mensagem.trim()}
-                                style={{ borderRadius: "8px", fontWeight: "bold", background: "#05BBD0", color: "#1D164D", border: "none" }}
                             >
-                                Enviar 🚀
+                                <FaPaperPlane className="me-2" /> Enviar
                             </button>
                         </div>
                     </div>

@@ -5,7 +5,7 @@ import TabelaTecnico from "../components/TabelaTecnico";
 import ModalTecnico from "../components/ModalTecnico";
 import ToastMensagem from "../components/ToastMensagem";
 import ModalConfirmacao from "../components/ModalConfirmacao";
-import { FaUndo } from "react-icons/fa";
+import { FaUndo, FaSearch, FaTools } from "react-icons/fa";
 
 import {
     listarTecnicos,
@@ -35,6 +35,9 @@ function Tecnicos() {
     // Novos Estados do Modal de Reativação
     const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
     const [idReativar, setIdReativar] = useState(null);
+
+    const ativos = tecnicos.filter((tecnico) => tecnico.ativo).length;
+    const inativos = tecnicos.filter((tecnico) => !tecnico.ativo).length;
 
     const carregarTecnicos = useCallback(async () => {
         try {
@@ -172,39 +175,64 @@ function Tecnicos() {
                     </button>
                 </div>
 
-                <div className="mb-4">
-                    <div className="d-flex gap-2 mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Pesquisar por nome..."
-                            value={nomeBusca}
-                            onChange={(e) => {
-                                setNomeBusca(e.target.value);
-                                if (e.target.value === "") {
-                                    setPaginaAtual(0);
-                                    carregarTecnicos();
-                                }
-                            }}
-                            onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
-                        />
-                        <button className="btn btn-custom px-4 btn-pesquisar-mobile" onClick={handlePesquisar}>
-                            🔍 Pesquisar
+                <div className="tecnicos-hero glass-card mb-4 p-4">
+                    <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                        <div className="d-flex align-items-center gap-3">
+                            <div className="hero-icon-badge">
+                                <FaTools />
+                            </div>
+                            <div>
+                                <h4 className="mb-1">Painel premium de técnicos</h4>
+                                <p className="mb-0">Gerencie a equipe com mais clareza, velocidade e estilo.</p>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <span className="chip chip-cyan">Ativos: {ativos}</span>
+                            <span className="chip chip-violet">Inativos: {inativos}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="tecnicos-search glass-card p-3 mb-4">
+                    <div className="d-flex flex-column flex-md-row gap-2 mb-3">
+                        <div className="input-group">
+                            <span className="input-group-text">
+                                <FaSearch />
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Pesquisar por nome..."
+                                value={nomeBusca}
+                                onChange={(e) => {
+                                    setNomeBusca(e.target.value);
+                                    if (e.target.value === "") {
+                                        setPaginaAtual(0);
+                                        carregarTecnicos();
+                                    }
+                                }}
+                                onKeyDown={(e) => e.key === "Enter" && handlePesquisar()}
+                            />
+                        </div>
+                        <button className="btn btn-custom px-4" onClick={handlePesquisar}>
+                            Pesquisar
                         </button>
                     </div>
-                    <div className="form-check text-start ms-1">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="mostrarInativosTecnico"
-                            checked={mostrarInativos}
-                            onChange={(e) => { setMostrarInativos(e.target.checked); setPaginaAtual(0); }}
-                            style={{ cursor: "pointer" }}
-                        />
-                        <label className="form-check-label ms-2 text-white" htmlFor="mostrarInativosTecnico"
-                            style={{ cursor: "pointer" }}>
-                            Mostrar inativos
-                        </label>
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div className="form-check text-start ms-1">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="mostrarInativosTecnico"
+                                checked={mostrarInativos}
+                                onChange={(e) => { setMostrarInativos(e.target.checked); setPaginaAtual(0); }}
+                                style={{ cursor: "pointer" }}
+                            />
+                            <label className="form-check-label ms-2 text-white" htmlFor="mostrarInativosTecnico"
+                                style={{ cursor: "pointer" }}>
+                                Mostrar inativos
+                            </label>
+                        </div>
                     </div>
                 </div>
 

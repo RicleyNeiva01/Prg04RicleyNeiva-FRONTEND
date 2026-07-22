@@ -106,13 +106,12 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
     }
 
     return (
-        <form className="form-modal" onSubmit={handleSubmit}>
-
+        <form className="form-modal text-start" onSubmit={handleSubmit}>
             <div className="mb-3">
                 <label className="form-label">Título do Chamado</label>
                 <input
                     type="text"
-                    className={`form-control ${erros.titulo ? "is-invalid" : ""}`}
+                    className={`form-control input-glass ${erros.titulo ? "is-invalid" : ""}`}
                     name="titulo"
                     value={dadosFormulario.titulo}
                     onChange={handleChange}
@@ -124,12 +123,13 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
             <div className="mb-3">
                 <label className="form-label">Descrição</label>
                 <textarea
-                    className={`form-control ${erros.descricao ? "is-invalid" : ""}`}
+                    className={`form-control input-glass ${erros.descricao ? "is-invalid" : ""}`}
                     name="descricao"
-                    rows="3"
+                    rows="4"
                     value={dadosFormulario.descricao}
                     onChange={handleChange}
-                    placeholder="Detalhe o problema..."
+                    placeholder="Descreva o problema com o máximo de detalhes possível..."
+                    style={{ resize: "none" }}
                 />
                 {erros.descricao && <small className="erro-formulario">{erros.descricao}</small>}
             </div>
@@ -138,7 +138,7 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 <div className="col-md-6 mb-3">
                     <label className="form-label">Prioridade</label>
                     <select
-                        className="form-select"
+                        className="form-select input-glass"
                         name="prioridade"
                         value={dadosFormulario.prioridade}
                         onChange={handleChange}
@@ -153,7 +153,7 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 <div className="col-md-6 mb-3">
                     <label className="form-label">Categoria</label>
                     <select
-                        className={`form-select ${erros.categoriaId ? "is-invalid" : ""}`}
+                        className={`form-select input-glass ${erros.categoriaId ? "is-invalid" : ""}`}
                         name="categoriaId"
                         value={dadosFormulario.categoriaId}
                         onChange={handleChange}
@@ -167,12 +167,11 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                 </div>
             </div>
 
-            {/* Campo solicitante — só ADMIN vê */}
             {isAdmin && (
                 <div className="mb-4">
                     <label className="form-label">Solicitante</label>
                     <select
-                        className={`form-select ${erros.usuarioId ? "is-invalid" : ""}`}
+                        className={`form-select input-glass ${erros.usuarioId ? "is-invalid" : ""}`}
                         name="usuarioId"
                         value={dadosFormulario.usuarioId}
                         onChange={handleChange}
@@ -185,18 +184,18 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
                     </select>
                     {erros.usuarioId && <small className="erro-formulario">{erros.usuarioId}</small>}
                     {chamado && (
-                        <small className="text-warning d-block mt-1">
+                        <small className="texto-ajuda d-block mt-1">
                             O solicitante não pode ser alterado após a abertura do chamado.
                         </small>
                     )}
                 </div>
             )}
 
-            <div className="acoes-formulario mt-4 d-flex gap-2 justify-content-end">
-                <button type="button" className="btn btn-cancelar" onClick={fechar}>
+            <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
-                <button type="submit" className="btn btn-custom">
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
                     <FaSave className="me-2" /> Salvar
                 </button>
             </div>

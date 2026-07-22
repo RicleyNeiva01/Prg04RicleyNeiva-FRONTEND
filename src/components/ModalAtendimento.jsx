@@ -3,7 +3,7 @@ import {
     cadastrarAtendimento,
     buscarAtendimentoPorChamado
 } from "../services/atendimentoService";
-import { FaTimes, FaCheck } from "react-icons/fa";
+import { FaTimes, FaCheck, FaClipboardList, FaUserCog, FaCalendarAlt } from "react-icons/fa";
 
 function ModalAtendimento({
     mostrar,
@@ -72,47 +72,48 @@ function ModalAtendimento({
 
     return (
         <div className="modal-overlay" onClick={fechar}>
-            
-            <div className="modal-glass-card text-start" onClick={(e) => e.stopPropagation()} style={{ width: "750px", maxWidth: "95%" }}>
-                
-                {/* CABEÇALHO DO MODAL */}
+            <div className="modal-glass-card text-start" onClick={(e) => e.stopPropagation()} style={{ width: "780px", maxWidth: "95%" }}>
                 <div className="modal-header-custom d-flex justify-content-between align-items-center mb-4">
-                    <h3 className="titulo-pagina m-0">
-                        {isResolvido ? "📄 Detalhes do Atendimento" : "🛠 Finalizar Atendimento"}
-                    </h3>
+                    <div className="d-flex align-items-center gap-2">
+                        <div className="hero-icon-badge" style={{ width: "42px", height: "42px" }}>
+                            <FaClipboardList />
+                        </div>
+                        <div>
+                            <h3 className="titulo-pagina m-0" style={{ fontSize: "1.25rem" }}>
+                                {isResolvido ? "Detalhes do Atendimento" : "Finalizar Atendimento"}
+                            </h3>
+                            <p className="mb-0 texto-ajuda">Registro profissional da solução aplicada</p>
+                        </div>
+                    </div>
                     <button className="fechar-modal" onClick={fechar} title="Fechar">
                         &times;
                     </button>
                 </div>
 
-                {/* SEÇÃO DE INFORMAÇÕES DO CHAMADO */}
-                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-4" style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                    <div>
-                        <h4 className="fw-bold mb-2 text-white" style={{ fontSize: "1.2rem", letterSpacing: "0.3px" }}>
-                            {chamado?.titulo}
-                        </h4>
-                        <div className="d-flex gap-2 mt-2">
-                            <span className="badge" style={{ backgroundColor: "rgba(5, 187, 208, 0.15)", color: "#05BBD0", border: "1px solid rgba(5, 187, 208, 0.3)" }}>
-                                Chamado #{chamado?.id}
-                            </span>
-                            <span className="badge" style={{ backgroundColor: "rgba(255, 255, 255, 0.06)", color: "#D1CFe3", border: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                                {chamado?.categoria?.nome || "Suporte Geral"}
-                            </span>
+                <div className="p-3 rounded-4 mb-4" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
+                        <div>
+                            <h4 className="fw-bold mb-2 text-white" style={{ fontSize: "1.15rem" }}>
+                                {chamado?.titulo}
+                            </h4>
+                            <div className="d-flex flex-wrap gap-2 mt-2">
+                                <span className="chip chip-cyan">Chamado #{chamado?.id}</span>
+                                <span className="chip chip-violet">{chamado?.categoria?.nome || "Suporte Geral"}</span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div className="p-3 rounded input-glass" style={{ minWidth: "250px" }}>
-                        <div className="d-flex flex-column gap-2" style={{ fontSize: "0.85rem" }}>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="texto-ajuda m-0">Técnico Responsável:</span>
-                                <strong style={{ color: "#05BBD0" }}>
-                                    {isResolvido ? (atendimento?.tecnico?.nome || "-") : (chamado?.tecnico?.nome || "-")}
-                                </strong>
+
+                        <div className="p-3 rounded-4" style={{ minWidth: "260px", background: "rgba(5, 187, 208, 0.08)", border: "1px solid rgba(5, 187, 208, 0.2)" }}>
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                                <FaUserCog className="text-cyan" />
+                                <span className="texto-ajuda m-0">Técnico responsável</span>
+                            </div>
+                            <div className="fw-semibold text-white">
+                                {isResolvido ? (atendimento?.tecnico?.nome || "-") : (chamado?.tecnico?.nome || "-")}
                             </div>
                             {isResolvido && atendimento?.dataAtendimento && (
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <span className="texto-ajuda m-0">Finalizado em:</span>
-                                    <span className="text-white fw-medium">
+                                <div className="d-flex align-items-center gap-2 mt-3">
+                                    <FaCalendarAlt className="text-cyan" />
+                                    <span className="texto-ajuda m-0">
                                         {new Date(atendimento.dataAtendimento).toLocaleString("pt-BR", {
                                             day: "2-digit", month: "2-digit", year: "numeric",
                                             hour: "2-digit", minute: "2-digit"
@@ -124,22 +125,21 @@ function ModalAtendimento({
                     </div>
                 </div>
 
-                {/* CORPO: ÁREA DA SOLUÇÃO */}
                 <div className="mb-4 d-flex flex-column flex-grow-1">
-                    <label className="form-label">
+                    <label className="form-label fw-semibold mb-2 text-white">
                         Descrição da solução aplicada
                     </label>
-                    
+
                     {isResolvido ? (
                         carregando ? (
-                            <div className="text-center py-5 rounded input-glass d-flex flex-column align-items-center justify-content-center">
+                            <div className="text-center py-5 rounded-4 input-glass d-flex flex-column align-items-center justify-content-center" style={{ minHeight: "180px" }}>
                                 <div className="spinner-border text-info mb-2" role="status"></div>
                                 <span className="texto-ajuda">Buscando dados do atendimento...</span>
                             </div>
                         ) : (
-                            <div 
-                                className="p-3 rounded input-glass custom-scrollbar" 
-                                style={{ minHeight: "150px", maxHeight: "260px", overflowY: "auto", whiteSpace: "pre-wrap", borderLeft: "4px solid #05BBD0" }}
+                            <div
+                                className="p-3 rounded-4 input-glass custom-scrollbar"
+                                style={{ minHeight: "180px", maxHeight: "280px", overflowY: "auto", whiteSpace: "pre-wrap", borderLeft: "4px solid #05BBD0" }}
                             >
                                 {atendimento ? atendimento.descricaoSolucao : "Nenhum dado de fechamento registrado."}
                             </div>
@@ -147,16 +147,15 @@ function ModalAtendimento({
                     ) : (
                         <textarea
                             className="form-control input-glass custom-scrollbar"
-                            rows="5"
+                            rows="6"
                             placeholder="Descreva detalhadamente os procedimentos técnicos realizados para a resolução deste chamado..."
                             value={descricaoSolucao}
                             onChange={(e) => setDescricaoSolucao(e.target.value)}
-                            style={{ minHeight: "150px", resize: "none" }}
+                            style={{ minHeight: "180px", resize: "none" }}
                         />
                     )}
                 </div>
 
-                {/* RODAPÉ DO MODAL (BOTÕES DE AÇÃO) */}
                 <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                     {isResolvido ? (
                         <button className="btn btn-cancelar d-flex align-items-center justify-content-center ms-auto" onClick={fechar}>
@@ -167,7 +166,7 @@ function ModalAtendimento({
                             <button className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
                                 <FaTimes className="me-2" /> Cancelar
                             </button>
-                            
+
                             <button
                                 className="btn btn-custom d-flex align-items-center justify-content-center"
                                 disabled={!descricaoSolucao.trim()}
@@ -178,9 +177,7 @@ function ModalAtendimento({
                         </>
                     )}
                 </div>
-
             </div>
-            
         </div>
     );
 }

@@ -174,6 +174,241 @@ nav#menu a:hover {
     box-shadow: 0 10px 20px rgba(5, 187, 208, 0.2);
 }
 
+.tecnicos-hero {
+    background: linear-gradient(135deg, rgba(5, 187, 208, 0.16), rgba(57, 15, 143, 0.24)) !important;
+    border: 1px solid rgba(5, 187, 208, 0.3) !important;
+}
+
+.hero-icon-badge,
+.table-icon-badge {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ciano), #7b2fff);
+    color: var(--branco);
+    box-shadow: 0 8px 20px rgba(5, 187, 208, 0.25);
+}
+
+.tecnicos-search .input-group-text {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: var(--ciano);
+}
+
+.tecnicos-search .form-control {
+    min-height: 46px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.16);
+}
+
+.chip-cyan {
+    background: rgba(5, 187, 208, 0.18);
+    color: #7ce7ff;
+}
+
+.chip-violet {
+    background: rgba(123, 47, 255, 0.18);
+    color: #d8c2ff;
+}
+
+.table-premium-card {
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.table-premium-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    background: linear-gradient(90deg, rgba(5, 187, 208, 0.12), transparent);
+}
+
+.table-premium-header p {
+    margin: 0;
+    color: rgba(224,224,255,0.75);
+    font-size: 0.95rem;
+}
+
+.table-row-premium td {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.tecnico-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--ciano), #7b2fff);
+    color: var(--branco);
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(5, 187, 208, 0.18);
+}
+
+.specialty-pill,
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.specialty-pill {
+    background: rgba(255,255,255,0.08);
+    color: var(--texto-claro);
+}
+
+.status-ativo {
+    background: rgba(0, 200, 151, 0.16);
+    color: #8dffd3;
+}
+
+.status-inativo {
+    background: rgba(239, 35, 60, 0.16);
+    color: #ffb0b8;
+}
+
+.premium-action {
+    border-radius: 999px;
+    padding: 8px 12px;
+    min-width: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease;
+}
+
+.btn-reactivar {
+    background: linear-gradient(135deg, #16a34a, #34d399);
+    color: var(--branco);
+    padding: 8px 14px;
+    font-weight: 700;
+}
+
+.btn-reactivar:hover {
+    transform: translateY(-2px);
+    color: var(--branco);
+    box-shadow: 0 8px 18px rgba(52, 211, 153, 0.25);
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    color: rgba(224,224,255,0.8);
+}
+
+.table-premium-card .text-muted {
+    color: rgba(224,224,255,0.65) !important;
+}
+
+.priority-pill,
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.priority-baixa {
+    background: rgba(5, 187, 208, 0.18);
+    color: #7ce7ff;
+}
+
+.priority-media {
+    background: rgba(123, 47, 255, 0.18);
+    color: #d8c2ff;
+}
+
+.priority-alta {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ffd08a;
+}
+
+.priority-urgente {
+    background: rgba(239, 35, 60, 0.16);
+    color: #ffb0b8;
+}
+
+.status-aberto {
+    background: rgba(239, 35, 60, 0.16);
+    color: #ffb0b8;
+}
+
+.status-andamento {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ffd08a;
+}
+
+.status-resolvido {
+    background: rgba(0, 200, 151, 0.16);
+    color: #8dffd3;
+}
+
+.status-default {
+    background: rgba(255,255,255,0.08);
+    color: var(--texto-claro);
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #7b2fff, var(--ciano));
+    color: var(--branco);
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(123, 47, 255, 0.2);
+}
+
+.profile-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.profile-admin {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ffd08a;
+}
+
+.profile-tecnico {
+    background: rgba(57, 15, 143, 0.18);
+    color: #d8c2ff;
+}
+
+.profile-user {
+    background: rgba(5, 187, 208, 0.18);
+    color: #7ce7ff;
+}
+
 /* =========================================
    4. FORMULÁRIOS E INPUTS
 ========================================= */

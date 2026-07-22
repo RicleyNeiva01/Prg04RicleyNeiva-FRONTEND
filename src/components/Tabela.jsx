@@ -1,16 +1,28 @@
 import React from "react";
-// 1. Importado o ícone FaUndo para simbolizar a reativação
-import { FaEdit, FaTrashAlt, FaUsers, FaInbox, FaUndo } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaUsers, FaInbox, FaUndo, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
-// 2. Adicionado o prop 'aoReativar' na assinatura do componente
 function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
+    const totalUsuarios = dados?.length || 0;
+    const ativos = dados?.filter((usuario) => usuario.ativo).length || 0;
+
     return (
-        <div className="card shadow-lg">
-            <div className="card-header card-header-custom">
-                <h5 className="mb-0">
-                    <FaUsers className="me-2" /> Lista de Usuários
-                </h5>
+        <div className="table-premium-card glass-card">
+            <div className="table-premium-header">
+                <div>
+                    <div className="d-flex align-items-center gap-2 mb-2">
+                        <div className="table-icon-badge">
+                            <FaUsers />
+                        </div>
+                        <h5 className="mb-0">Lista de usuários</h5>
+                    </div>
+                    <p className="mb-0">Uma visão premium, clara e organizada dos acessos do sistema.</p>
+                </div>
+                <div className="d-flex flex-wrap gap-2">
+                    <span className="chip chip-cyan">Ativos: {ativos}</span>
+                    <span className="chip chip-violet">Total: {totalUsuarios}</span>
+                </div>
             </div>
+
             <div className="card-body p-0 table-responsive">
                 <table className="table table-custom table-hover align-middle mb-0">
                     <thead>
@@ -26,21 +38,25 @@ function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
                     <tbody>
                         {dados && dados.length > 0 ? (
                             dados.map((usuario) => (
-                                <tr key={usuario.id}>
+                                <tr key={usuario.id} className="table-row-premium">
                                     <td className="id-custom">
-                                        #{usuario.id}
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="user-avatar">
+                                                {usuario.nome?.charAt(0)?.toUpperCase() || "U"}
+                                            </div>
+                                            <div>
+                                                <div className="fw-semibold text-white">#{usuario.id}</div>
+                                                <small className="text-muted">Cadastro</small>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td>{usuario.nome}</td>
+                                    <td>
+                                        <div className="fw-semibold text-white">{usuario.nome}</div>
+                                        <small className="text-muted">Usuário do sistema</small>
+                                    </td>
                                     <td>{usuario.email}</td>
                                     <td>
-                                        <span
-                                            className={`badge ${usuario.perfil === "ADMIN"
-                                                ? "badge-admin"
-                                                : usuario.perfil === "TECNICO"
-                                                    ? "badge-tecnico"
-                                                    : "badge-usuario"
-                                                }`}
-                                        >
+                                        <span className={`profile-pill ${usuario.perfil === "ADMIN" ? "profile-admin" : usuario.perfil === "TECNICO" ? "profile-tecnico" : "profile-user"}`}>
                                             {usuario.perfil === "ADMIN"
                                                 ? "Administrador"
                                                 : usuario.perfil === "TECNICO"
@@ -49,25 +65,16 @@ function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
                                         </span>
                                     </td>
                                     <td>
-                                        <span
-                                            className={`badge ${usuario.ativo
-                                                ? "badge-ativo"
-                                                : "badge-inativo"
-                                                }`}
-                                        >
-                                            {usuario.ativo
-                                                ? "Ativo"
-                                                : "Inativo"}
+                                        <span className={`status-pill ${usuario.ativo ? "status-ativo" : "status-inativo"}`}>
+                                            {usuario.ativo ? <><FaCheckCircle className="me-1" /> Ativo</> : <><FaTimesCircle className="me-1" /> Inativo</>}
                                         </span>
                                     </td>
                                     <td className="text-center">
                                         <div className="d-flex justify-content-center gap-2">
-                                            {/* 3. Renderização Condicional Inteligente baseada no status 'ativo' */}
                                             {usuario.ativo ? (
                                                 <>
-                                                    {/* Usuário Ativo: Mostra Editar e Lixeira */}
                                                     <button
-                                                        className="btn btn-editar btn-sm"
+                                                        className="btn premium-action btn-editar"
                                                         onClick={() => aoEditar(usuario)}
                                                         title="Editar"
                                                     >
@@ -75,7 +82,7 @@ function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
                                                     </button>
 
                                                     <button
-                                                        className="btn btn-excluir excluir btn-sm"
+                                                        className="btn premium-action btn-excluir"
                                                         onClick={() => aoExcluir(usuario.id)}
                                                         title="Excluir"
                                                     >
@@ -83,14 +90,12 @@ function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
                                                     </button>
                                                 </>
                                             ) : (
-                                                /* Usuário Inativo: Mostra SOMENTE o Botão Reativar */
                                                 <button
-                                                    className="btn btn-outline-success btn-sm px-3 py-1 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                                                    className="btn premium-action btn-reactivar"
                                                     onClick={() => aoReativar(usuario.id)}
                                                     title="Reativar Usuário"
-                                                    style={{ fontWeight: "600", borderRadius: "20px", transition: "0.2s" }}
                                                 >
-                                                    <FaUndo size={13} /> Reativar
+                                                    <FaUndo className="me-2" /> Reativar
                                                 </button>
                                             )}
                                         </div>
@@ -99,12 +104,13 @@ function Tabela({ dados, aoExcluir, aoEditar, aoReativar }) {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center py-5 text-muted">
-                                    <FaInbox size={50} className="mb-3 opacity-50" />
-                                    <h5 className="text-secondary">
-                                        Nenhum usuário encontrado.
-                                    </h5>
-                                </td>s
+                                <td colSpan="6" className="text-center py-5">
+                                    <div className="empty-state">
+                                        <FaInbox size={46} className="mb-3 opacity-75" />
+                                        <h5 className="mb-2">Nenhum usuário encontrado.</h5>
+                                        <p className="mb-0">Tente ajustar a busca ou cadastrar um novo usuário.</p>
+                                    </div>
+                                </td>
                             </tr>
                         )}
                     </tbody>
