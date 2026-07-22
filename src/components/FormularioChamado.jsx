@@ -20,6 +20,8 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
     const [erros, setErros] = useState({});
     const [usuarios, setUsuarios] = useState([]);
     const [categorias, setCategorias] = useState([]);
+    const [carregandoDados, setCarregandoDados] = useState(true);
+    const [salvando, setSalvando] = useState(false);
 
     useEffect(() => {
         if (chamado) {
@@ -51,6 +53,7 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
     }, []);
 
     async function carregarDados() {
+        setCarregandoDados(true);
         try {
             const categoriasResponse = await listarCategorias(0, 100);
             setCategorias(categoriasResponse.data.content || categoriasResponse.data);
@@ -62,6 +65,8 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
             }
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
+        } finally {
+            setCarregandoDados(false);
         }
     }
 
@@ -94,20 +99,34 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
         return Object.keys(novosErros).length === 0;
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         if (!validarFormulario()) return;
 
-        aoSalvar({
-            ...dadosFormulario,
-            usuarioId: Number(dadosFormulario.usuarioId),
-            categoriaId: Number(dadosFormulario.categoriaId)
-        });
+        setSalvando(true);
+        try {
+            await aoSalvar({
+                ...dadosFormulario,
+                usuarioId: Number(dadosFormulario.usuarioId),
+                categoriaId: Number(dadosFormulario.categoriaId)
+            });
+        } catch (error) {
+            console.error("Erro ao salvar chamado:", error);
+        } finally {
+            setSalvando(false);
+        }
     }
 
     return (
         <form className="form-modal text-start" onSubmit={handleSubmit}>
-            <div className="mb-3">
+            {carregandoDados ? (
+                <div className="text-center py-4 rounded-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div className="spinner-border text-info mb-2" role="status" />
+                    <div className="texto-ajuda">Carregando opções do formulário...</div>
+                </div>
+            ) : (
+                <>
+                    <div className="mb-3">
                 <label className="form-label">Título do Chamado</label>
                 <input
                     type="text"
@@ -192,13 +211,24 @@ function FormularioChamado({ fechar, aoSalvar, chamado }) {
             )}
 
             <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar} disabled={salvando}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
-                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
-                    <FaSave className="me-2" /> Salvar
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center" disabled={salvando || carregandoDados}>
+                    {salvando ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                            Salvando...
+                        </>
+                    ) : (
+                        <>
+                            <FaSave className="me-2" /> Salvar
+                        </>
+                    )}
                 </button>
             </div>
+                </>
+            )}
         </form>
     );
 }

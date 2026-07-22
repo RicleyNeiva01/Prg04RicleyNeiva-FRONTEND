@@ -8,6 +8,7 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
     });
 
     const [erros, setErros] = useState({});
+    const [salvando, setSalvando] = useState(false);
 
     useEffect(() => {
         if (categoria) {
@@ -50,14 +51,21 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
         return Object.keys(novosErros).length === 0;
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
 
         if (!validarFormulario()) {
             return;
         }
 
-        aoSalvar(dadosFormulario);
+        setSalvando(true);
+        try {
+            await aoSalvar(dadosFormulario);
+        } catch (error) {
+            console.error("Erro ao salvar categoria:", error);
+        } finally {
+            setSalvando(false);
+        }
     }
 
     return (
@@ -97,12 +105,21 @@ function FormularioCategoria({ fechar, aoSalvar, categoria }) {
 
             {/* Botões de Ação */}
             <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar} disabled={salvando}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
                 
-                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
-                    <FaSave className="me-2" /> Salvar
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center" disabled={salvando}>
+                    {salvando ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                            Salvando...
+                        </>
+                    ) : (
+                        <>
+                            <FaSave className="me-2" /> Salvar
+                        </>
+                    )}
                 </button>
             </div>
 

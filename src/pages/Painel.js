@@ -13,21 +13,59 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 
 function Painel() {
     const { usuario, isAdmin, isTecnico } = useAuth();
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] = useState({
+        total: 0,
+        abertos: 0,
+        emAndamento: 0,
+        resolvidos: 0,
+        tecnicos: 0,
+        usuarios: 0,
+    });
     const [carregando, setCarregando] = useState(true);
 
     useEffect(() => {
+        let ativo = true;
+
         async function carregarDashboard() {
             try {
                 const response = await api.get("/dashboard");
-                setStats(response.data);
+                if (!ativo) return;
+
+                const payload = response.data?.dados ?? response.data?.stats ?? response.data?.dashboard ?? response.data;
+                const dados = payload?.content ?? payload?.data ?? payload;
+
+                setStats({
+                    total: dados?.total ?? dados?.totalChamados ?? dados?.quantidadeTotal ?? 0,
+                    abertos: dados?.abertos ?? dados?.totalAbertos ?? 0,
+                    emAndamento: dados?.emAndamento ?? dados?.totalEmAndamento ?? 0,
+                    resolvidos: dados?.resolvidos ?? dados?.totalResolvidos ?? 0,
+                    tecnicos: dados?.tecnicos ?? dados?.totalTecnicos ?? 0,
+                    usuarios: dados?.usuarios ?? dados?.totalUsuarios ?? 0,
+                });
             } catch (error) {
                 console.error("Erro ao carregar dashboard:", error);
+                if (ativo) {
+                    setStats({
+                        total: 0,
+                        abertos: 0,
+                        emAndamento: 0,
+                        resolvidos: 0,
+                        tecnicos: 0,
+                        usuarios: 0,
+                    });
+                }
             } finally {
-                setCarregando(false);
+                if (ativo) {
+                    setCarregando(false);
+                }
             }
         }
+
         carregarDashboard();
+
+        return () => {
+            ativo = false;
+        };
     }, []);
 
     function CardStat({ icone, label, valor, cor, destaque }) {
@@ -64,9 +102,9 @@ function Painel() {
 
     // DADOS PARA O GRÁFICO
     const dadosGrafico = [
-        { name: "Abertos", value: stats?.abertos || 0, color: "#4da3ff" },
-        { name: "Em Andamento", value: stats?.emAndamento || 0, color: "#ffc107" },
-        { name: "Resolvidos", value: stats?.resolvidos || 0, color: "#20c997" }
+        { name: "Abertos", value: stats.abertos || 0, color: "#4da3ff" },
+        { name: "Em Andamento", value: stats.emAndamento || 0, color: "#ffc107" },
+        { name: "Resolvidos", value: stats.resolvidos || 0, color: "#20c997" }
     ];
 
     return (
@@ -88,17 +126,17 @@ function Painel() {
 
                 {/* Cards de estatísticas */}
                 <div className="row g-4 mb-5">
-                    <CardStat icone={<FaTicketAlt />} label="Total de Chamados" valor={stats?.total} cor="var(--ciano)" destaque={true} />
+                    <CardStat icone={<FaTicketAlt />} label="Total de Chamados" valor={stats.total} cor="var(--ciano)" destaque={true} />
                     
                     <div className="col-12 col-lg-8">
                         <div className="row g-4 h-100 align-items-center">
-                            <CardStat icone={<FaExclamationCircle />} label="Abertos" valor={stats?.abertos} cor="#4da3ff" />
-                            <CardStat icone={<FaSpinner />} label="Em Andamento" valor={stats?.emAndamento} cor="#ffc107" />
-                            <CardStat icone={<FaCheckCircle />} label="Resolvidos" valor={stats?.resolvidos} cor="#20c997" />
+                            <CardStat icone={<FaExclamationCircle />} label="Abertos" valor={stats.abertos} cor="#4da3ff" />
+                            <CardStat icone={<FaSpinner />} label="Em Andamento" valor={stats.emAndamento} cor="#ffc107" />
+                            <CardStat icone={<FaCheckCircle />} label="Resolvidos" valor={stats.resolvidos} cor="#20c997" />
                             {isAdmin && (
                                 <>
-                                    <CardStat icone={<FaWrench />} label="Técnicos" valor={stats?.tecnicos} cor="#b19cd9" />
-                                    <CardStat icone={<FaUsers />} label="Usuários" valor={stats?.usuarios} cor="#ff9800" />
+                                    <CardStat icone={<FaWrench />} label="Técnicos" valor={stats.tecnicos} cor="#b19cd9" />
+                                    <CardStat icone={<FaUsers />} label="Usuários" valor={stats.usuarios} cor="#ff9800" />
                                 </>
                             )}
                         </div>

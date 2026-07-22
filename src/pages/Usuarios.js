@@ -27,19 +27,23 @@ function Usuarios() {
     const [mostrarInativos, setMostrarInativos] = useState(false);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+    const [carregando, setCarregando] = useState(true);
 
     // Estados do Modal de Exclusão
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [idExcluir, setIdExcluir] = useState(null);
+    const [processandoExclusao, setProcessandoExclusao] = useState(false);
 
     // Novos Estados do Modal de Reativação
     const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
     const [idReativar, setIdReativar] = useState(null);
+    const [processandoReativacao, setProcessandoReativacao] = useState(false);
 
     const ativos = usuarios.filter((usuario) => usuario.ativo).length;
     const inativos = usuarios.filter((usuario) => !usuario.ativo).length;
 
     const carregarUsuarios = useCallback(async () => {
+        setCarregando(true);
         try {
             const response = await listarUsuarios(mostrarInativos, paginaAtual);
             setUsuarios(response.data.content || response.data);
@@ -48,6 +52,9 @@ function Usuarios() {
             }
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao carregar usuários.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }, [mostrarInativos, paginaAtual]);
 
@@ -57,9 +64,10 @@ function Usuarios() {
     }, [paginaAtual, mostrarInativos]);
 
     async function handlePesquisar() {
+        setCarregando(true);
         if (nomeBusca.trim() === "") {
             setPaginaAtual(0);
-            carregarUsuarios();
+            await carregarUsuarios();
             return;
         }
         try {
@@ -73,6 +81,8 @@ function Usuarios() {
             }
         } catch (error) {
             mostrarMensagem("Erro ao pesquisar usuários.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -116,19 +126,22 @@ function Usuarios() {
     }
 
     async function confirmarExclusao() {
+        setProcessandoExclusao(true);
         try {
             await excluirUsuario(idExcluir);
             mostrarMensagem("Usuário excluído com sucesso!", "warning");
-            carregarUsuarios();
+            await carregarUsuarios();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao excluir usuário!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setMostrarConfirmacao(false);
+            setIdExcluir(null);
+            setProcessandoExclusao(false);
         }
-        setMostrarConfirmacao(false);
-        setIdExcluir(null);
     }
 
     // Ações de Reativação
@@ -138,19 +151,22 @@ function Usuarios() {
     }
 
     async function confirmarReativacao() {
+        setProcessandoReativacao(true);
         try {
             await reativarUsuario(idReativar);
             mostrarMensagem("Usuário reativado com sucesso!", "success");
-            carregarUsuarios();
+            await carregarUsuarios();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao reativar usuário!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setMostrarConfirmacaoReativar(false);
+            setIdReativar(null);
+            setProcessandoReativacao(false);
         }
-        setMostrarConfirmacaoReativar(false); // Fecha o modal
-        setIdReativar(null);
     }
 
     function handleEditarUsuario(usuario) {
@@ -234,12 +250,19 @@ function Usuarios() {
                     </div>
                 </div>
 
-                <Tabela 
-                    dados={usuarios} 
-                    aoExcluir={handleExcluirUsuario} 
-                    aoEditar={handleEditarUsuario} 
-                    aoReativar={handleReativarUsuarioClicado} // Passamos a função que abre o modal
-                />
+                {carregando ? (
+                    <div className="text-center py-5 text-light">
+                        <div className="spinner-border text-info mb-3" role="status" />
+                        <div>Carregando usuários...</div>
+                    </div>
+                ) : (
+                    <Tabela 
+                        dados={usuarios} 
+                        aoExcluir={handleExcluirUsuario} 
+                        aoEditar={handleEditarUsuario} 
+                        aoReativar={handleReativarUsuarioClicado}
+                    />
+                )}
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -276,6 +299,10 @@ function Usuarios() {
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
                     mensagem="Tem certeza que deseja desativar este usuário?" 
+                    textoBotaoConfirmar={processandoExclusao ? "Desativando..." : "Confirmar"}
+                    iconeBotaoConfirmar={processandoExclusao ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" /> : null}
+                    classeBotaoConfirmar={processandoExclusao ? "btn btn-excluir disabled" : "btn btn-excluir"}
+                    desabilitarConfirmar={processandoExclusao}
                 />
 
                 {/* NOVO Modal de Reativação COM AS PROPS NOVAS */}
@@ -285,9 +312,10 @@ function Usuarios() {
                     aoConfirmar={confirmarReativacao}
                     titulo="Confirmar Reativação"
                     mensagem="Tem certeza que deseja reativar o acesso deste usuário?" 
-                    textoBotaoConfirmar="Reativar"
-                    iconeBotaoConfirmar={<FaUndo className="me-2" />}
-                    classeBotaoConfirmar="btn btn-success"
+                    textoBotaoConfirmar={processandoReativacao ? "Reativando..." : "Reativar"}
+                    iconeBotaoConfirmar={processandoReativacao ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" /> : <FaUndo className="me-2" />}
+                    classeBotaoConfirmar={processandoReativacao ? "btn btn-atendimento disabled" : "btn btn-atendimento"}
+                    desabilitarConfirmar={processandoReativacao}
                 />
             </main>
             <Footer />

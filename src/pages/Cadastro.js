@@ -234,8 +234,17 @@ function Cadastro() {
                             {/* Botão de Enviar */}
                             <div className="d-grid mt-2">
                                 <button type="submit" className="btn-login py-2 fs-5 d-flex justify-content-center align-items-center" disabled={carregando}>
-                                    <FaSave className="me-2" />
-                                    {carregando ? "Criando conta..." : "CADASTRAR"}
+                                    {carregando ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                                            Criando conta...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaSave className="me-2" />
+                                            CADASTRAR
+                                        </>
+                                    )}
                                 </button>
                             </div>
 

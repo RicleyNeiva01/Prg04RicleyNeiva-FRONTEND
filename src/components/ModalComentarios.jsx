@@ -15,16 +15,22 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
     const [mensagem, setMensagem] = useState("");
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [comentarioExcluir, setComentarioExcluir] = useState(null);
+    const [carregandoComentarios, setCarregandoComentarios] = useState(false);
+    const [processandoComentario, setProcessandoComentario] = useState(false);
 
     const carregarComentarios = useCallback(async () => {
         if (!chamado) return;
+        setCarregandoComentarios(true);
         try {
             const response = await listarComentariosPorChamado(chamado.id);
             setComentarios(response.data.content || response.data);
         } catch (error) {
             console.error("Erro ao carregar comentários", error);
+            mostrarMensagem("Erro ao carregar comentários.", "danger");
+        } finally {
+            setCarregandoComentarios(false);
         }
-    }, [chamado]);
+    }, [chamado, mostrarMensagem]);
 
     useEffect(() => {
         if (mostrar && chamado) {
@@ -36,6 +42,7 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
     async function handleSalvarComentario() {
         if (mensagem.trim() === "") return;
 
+        setProcessandoComentario(true);
         try {
             const comentario = {
                 mensagem: mensagem,
@@ -49,10 +56,14 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
             await carregarComentarios();
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao enviar comentário.", "danger");
+        } finally {
+            setProcessandoComentario(false);
         }
     }
 
     async function handleExcluirComentario() {
+        setProcessandoComentario(true);
         try {
             await excluirComentario(comentarioExcluir);
             mostrarMensagem("Comentário excluído com sucesso!", "warning");
@@ -61,6 +72,9 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
             await carregarComentarios();
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao excluir comentário.", "danger");
+        } finally {
+            setProcessandoComentario(false);
         }
     }
 
@@ -116,7 +130,12 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
                 </div>
 
                 <div className="custom-scrollbar" style={{ overflowY: "auto", flexGrow: 1, paddingRight: "8px", display: "flex", flexDirection: "column", gap: "14px", marginBottom: "18px" }}>
-                    {comentarios.length === 0 ? (
+                    {carregandoComentarios ? (
+                        <div className="text-center py-5 rounded-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.12)" }}>
+                            <div className="spinner-border text-info mb-3" role="status" />
+                            <div className="text-white">Carregando comentários...</div>
+                        </div>
+                    ) : comentarios.length === 0 ? (
                         <div className="text-center py-5 rounded-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.12)" }}>
                             <h5 className="text-white mb-2">Nenhum comentário ainda.</h5>
                             <p className="mb-0 texto-ajuda">Seja o primeiro a comentar neste chamado.</p>
@@ -200,9 +219,18 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
                             <button
                                 className="btn btn-custom px-4 d-flex align-items-center justify-content-center"
                                 onClick={handleSalvarComentario}
-                                disabled={!mensagem.trim()}
+                                disabled={!mensagem.trim() || processandoComentario}
                             >
-                                <FaPaperPlane className="me-2" /> Enviar
+                                {processandoComentario ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                                        Enviando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaPaperPlane className="me-2" /> Enviar
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

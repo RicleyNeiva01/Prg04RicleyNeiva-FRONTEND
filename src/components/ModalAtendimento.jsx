@@ -14,6 +14,7 @@ function ModalAtendimento({
     const [descricaoSolucao, setDescricaoSolucao] = useState("");
     const [atendimento, setAtendimento] = useState(null);
     const [carregando, setCarregando] = useState(false);
+    const [finalizando, setFinalizando] = useState(false);
 
     const carregarAtendimento = useCallback(async () => {
         if (!chamado) return;
@@ -43,6 +44,7 @@ function ModalAtendimento({
     async function handleFinalizarAtendimento() {
         if (!descricaoSolucao.trim()) return;
 
+        setFinalizando(true);
         try {
             const novoAtendimento = {
                 descricaoSolucao,
@@ -63,6 +65,8 @@ function ModalAtendimento({
                 error.response?.data?.erro ||
                 "Erro ao registrar atendimento!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setFinalizando(false);
         }
     }
 
@@ -169,10 +173,19 @@ function ModalAtendimento({
 
                             <button
                                 className="btn btn-custom d-flex align-items-center justify-content-center"
-                                disabled={!descricaoSolucao.trim()}
+                                disabled={!descricaoSolucao.trim() || finalizando}
                                 onClick={handleFinalizarAtendimento}
                             >
-                                <FaCheck className="me-2" /> Concluir Atendimento
+                                {finalizando ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                                        Salvando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaCheck className="me-2" /> Concluir Atendimento
+                                    </>
+                                )}
                             </button>
                         </>
                     )}

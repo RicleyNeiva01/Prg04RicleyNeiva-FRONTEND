@@ -126,8 +126,15 @@ function LoginForm() {
 
                     {/* Botão de Submit (btn-login customizado) */}
                     <div className="d-grid mt-2">
-                        <button type="submit" className="btn-login" disabled={carregando}>
-                            {carregando ? "Entrando..." : "ENTRAR NO SISTEMA"}
+                        <button type="submit" className="btn-login d-flex justify-content-center align-items-center" disabled={carregando}>
+                            {carregando ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                                    Entrando...
+                                </>
+                            ) : (
+                                "ENTRAR NO SISTEMA"
+                            )}
                         </button>
                     </div>
 

@@ -5,14 +5,19 @@ function ModalAtribuirTecnico({ mostrar, fechar, chamado, aoSalvar }) {
     const [tecnicos, setTecnicos] = useState([]);
     const [tecnicoId, setTecnicoId] = useState("");
     const [erro, setErro] = useState("");
+    const [carregando, setCarregando] = useState(false);
+    const [salvando, setSalvando] = useState(false);
 
     useEffect(() => {
         async function carregarTecnicos() {
+            setCarregando(true);
             try {
                 const response = await listarTecnicos(false, 0, 100);
                 setTecnicos(response.data.content || response.data || []);
             } catch (error) {
                 console.error("Erro ao carregar técnicos", error);
+            } finally {
+                setCarregando(false);
             }
         }
 
@@ -20,12 +25,13 @@ function ModalAtribuirTecnico({ mostrar, fechar, chamado, aoSalvar }) {
             carregarTecnicos();
             setTecnicoId("");
             setErro("");
+            setSalvando(false);
         }
     }, [mostrar]);
 
     if (!mostrar) return null;
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
 
         if (!tecnicoId) {
@@ -33,7 +39,14 @@ function ModalAtribuirTecnico({ mostrar, fechar, chamado, aoSalvar }) {
             return;
         }
 
-        aoSalvar(chamado.id, Number(tecnicoId));
+        setSalvando(true);
+        try {
+            await aoSalvar(chamado.id, Number(tecnicoId));
+        } catch (error) {
+            console.error("Erro ao atribuir técnico", error);
+        } finally {
+            setSalvando(false);
+        }
     }
 
     return (
@@ -84,29 +97,37 @@ function ModalAtribuirTecnico({ mostrar, fechar, chamado, aoSalvar }) {
 
                     <div className="mb-3">
                         <label className="form-label">Selecionar técnico</label>
-                        <select
-                            className={`form-select ${erro ? "is-invalid" : ""}`}
-                            value={tecnicoId}
-                            onChange={(e) => {
-                                setTecnicoId(e.target.value);
-                                setErro("");
-                            }}
-                        >
-                            <option value="">Selecione um técnico</option>
-                            {tecnicos.map((tecnico) => (
-                                <option key={tecnico.id} value={tecnico.id}>
-                                    {tecnico.nome}
-                                </option>
-                            ))}
-                        </select>
+                        {carregando ? (
+                            <div className="text-center py-3 rounded-3" style={{ background: "rgba(255,255,255,0.05)" }}>
+                                <div className="spinner-border spinner-border-sm text-info mb-2" role="status" />
+                                <div className="text-white-50">Carregando técnicos...</div>
+                            </div>
+                        ) : (
+                            <select
+                                className={`form-select ${erro ? "is-invalid" : ""}`}
+                                value={tecnicoId}
+                                onChange={(e) => {
+                                    setTecnicoId(e.target.value);
+                                    setErro("");
+                                }}
+                                disabled={salvando}
+                            >
+                                <option value="">Selecione um técnico</option>
+                                {tecnicos.map((tecnico) => (
+                                    <option key={tecnico.id} value={tecnico.id}>
+                                        {tecnico.nome}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
                     </div>
 
                     <div className="acoes-formulario">
-                        <button type="button" className="btn btn-cancelar" onClick={fechar}>
+                        <button type="button" className="btn btn-cancelar" onClick={fechar} disabled={salvando}>
                             Cancelar
                         </button>
-                        <button type="submit" className="btn btn-atendimento">
-                            Salvar Atribuição
+                        <button type="submit" className="btn btn-atendimento" disabled={salvando || carregando}>
+                            {salvando ? "Salvando..." : "Salvar Atribuição"}
                         </button>
                     </div>
                 </form>

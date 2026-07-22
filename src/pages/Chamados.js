@@ -40,12 +40,14 @@ function Chamados() {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [mostrarModalAtendimento, setMostrarModalAtendimento] = useState(false);
     const [chamadoAtendimento, setChamadoAtendimento] = useState(null);
+    const [carregando, setCarregando] = useState(true);
 
     const abertos = chamados.filter((chamado) => chamado.status === "ABERTO").length;
     const emAndamento = chamados.filter((chamado) => chamado.status === "EM_ANDAMENTO").length;
     const resolvidos = chamados.filter((chamado) => chamado.status === "RESOLVIDO").length;
 
     const carregarChamados = useCallback(async () => {
+        setCarregando(true);
         try {
             const response = await listarChamados(filtroStatus, tituloBusca, paginaAtual);
             setChamados(response.data.content || response.data);
@@ -54,6 +56,9 @@ function Chamados() {
             }
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao carregar chamados.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }, [filtroStatus, tituloBusca, paginaAtual]);
 
@@ -252,14 +257,21 @@ function Chamados() {
                     </div>
                 </div>
 
-                <TabelaChamado
-                    dados={chamados}
-                    aoExcluir={handleExcluirChamado}
-                    aoEditar={handleEditarChamado}
-                    aoAtribuirTecnico={handleAbrirModalTecnico}
-                    aoComentarios={handleAbrirComentarios}
-                    aoAtender={handleAbrirAtendimento}
-                />
+                {carregando ? (
+                    <div className="text-center py-5 text-light">
+                        <div className="spinner-border text-info mb-3" role="status" />
+                        <div>Carregando chamados...</div>
+                    </div>
+                ) : (
+                    <TabelaChamado
+                        dados={chamados}
+                        aoExcluir={handleExcluirChamado}
+                        aoEditar={handleEditarChamado}
+                        aoAtribuirTecnico={handleAbrirModalTecnico}
+                        aoComentarios={handleAbrirComentarios}
+                        aoAtender={handleAbrirAtendimento}
+                    />
+                )}
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">

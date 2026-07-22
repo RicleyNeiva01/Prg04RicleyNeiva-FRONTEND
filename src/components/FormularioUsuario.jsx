@@ -13,6 +13,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
     const [erros, setErros] = useState({});
     const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [salvando, setSalvando] = useState(false);
 
     useEffect(() => {
         if (usuario) {
@@ -100,17 +101,24 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
         return Object.keys(novosErros).length === 0;
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         if (!validarFormulario()) return;
-        
-        const usuarioEnviar = { ...dadosFormulario };
-        usuarioEnviar.cpf = usuarioEnviar.cpf.replace(/\D/g, "");
-        usuarioEnviar.telefone = usuarioEnviar.telefone.replace(/\D/g, "");
-        
-        if (usuarioEnviar.senha.trim() === "") delete usuarioEnviar.senha;
-        
-        aoSalvar(usuarioEnviar);
+
+        setSalvando(true);
+        try {
+            const usuarioEnviar = { ...dadosFormulario };
+            usuarioEnviar.cpf = usuarioEnviar.cpf.replace(/\D/g, "");
+            usuarioEnviar.telefone = usuarioEnviar.telefone.replace(/\D/g, "");
+            
+            if (usuarioEnviar.senha.trim() === "") delete usuarioEnviar.senha;
+            
+            await aoSalvar(usuarioEnviar);
+        } catch (error) {
+            console.error("Erro ao salvar usuário:", error);
+        } finally {
+            setSalvando(false);
+        }
     }
 
     return (
@@ -221,12 +229,21 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
             {/* Botões de Ação */}
             <div className="acoes-formulario pt-3 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar}>
+                <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar} disabled={salvando}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
                 
-                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center">
-                    <FaSave className="me-2" /> Salvar
+                <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center" disabled={salvando}>
+                    {salvando ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                            Salvando...
+                        </>
+                    ) : (
+                        <>
+                            <FaSave className="me-2" /> Salvar
+                        </>
+                    )}
                 </button>
             </div>
 

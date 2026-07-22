@@ -26,10 +26,13 @@ function Categorias() {
     const [tipoToast, setTipoToast] = useState("success");
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [idExcluir, setIdExcluir] = useState(null);
+    const [processandoExclusao, setProcessandoExclusao] = useState(false);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+    const [carregando, setCarregando] = useState(true);
 
     const carregarCategorias = useCallback(async () => {
+        setCarregando(true);
         try {
             const response = await listarCategorias(paginaAtual);
             setCategorias(response.data.content || response.data);
@@ -38,6 +41,9 @@ function Categorias() {
             }
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao carregar categorias.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }, [paginaAtual]);
 
@@ -47,9 +53,10 @@ function Categorias() {
     }, [paginaAtual]);
 
     async function handlePesquisar() {
+        setCarregando(true);
         if (nomeBusca.trim() === "") {
             setPaginaAtual(0);
-            carregarCategorias();
+            await carregarCategorias();
             return;
         }
         try {
@@ -63,6 +70,8 @@ function Categorias() {
             }
         } catch (error) {
             mostrarMensagem("Erro ao pesquisar categorias.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -101,18 +110,21 @@ function Categorias() {
     }
 
     async function confirmarExclusao() {
+        setProcessandoExclusao(true);
         try {
             await excluirCategoria(idExcluir);
             mostrarMensagem("Categoria excluída com sucesso!", "warning");
-            carregarCategorias();
+            await carregarCategorias();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 "Erro ao excluir categoria!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setMostrarConfirmacao(false);
+            setIdExcluir(null);
+            setProcessandoExclusao(false);
         }
-        setMostrarConfirmacao(false);
-        setIdExcluir(null);
     }
 
     function handleEditarCategoria(categoria) {
@@ -191,11 +203,18 @@ function Categorias() {
                     </div>
                 </div>
 
-                <TabelaCategoria
-                    dados={categorias}
-                    aoExcluir={handleExcluirCategoria}
-                    aoEditar={handleEditarCategoria}
-                />
+                {carregando ? (
+                    <div className="text-center py-5 text-light">
+                        <div className="spinner-border text-info mb-3" role="status" />
+                        <div>Carregando categorias...</div>
+                    </div>
+                ) : (
+                    <TabelaCategoria
+                        dados={categorias}
+                        aoExcluir={handleExcluirCategoria}
+                        aoEditar={handleEditarCategoria}
+                    />
+                )}
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -250,6 +269,10 @@ function Categorias() {
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
                     mensagem="Tem certeza que deseja excluir esta categoria?"
+                    textoBotaoConfirmar={processandoExclusao ? "Excluindo..." : "Confirmar"}
+                    iconeBotaoConfirmar={processandoExclusao ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" /> : null}
+                    classeBotaoConfirmar={processandoExclusao ? "btn btn-exluir disabled" : "btn btn-excluir"}
+                    desabilitarConfirmar={processandoExclusao}
                 />
 
             </main>

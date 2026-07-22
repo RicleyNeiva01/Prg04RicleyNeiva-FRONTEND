@@ -10,9 +10,14 @@ function ModalConfirmacao({
     observacao,
     textoBotaoConfirmar = "Excluir",
     iconeBotaoConfirmar = <FaTrashAlt className="me-2" />,
-    classeBotaoConfirmar = "btn-excluir"
+    classeBotaoConfirmar = "btn btn-danger",
+    desabilitarConfirmar = false
 }) {
     if (!mostrar) return null;
+
+    const classeConfirmarFinal = classeBotaoConfirmar?.startsWith("btn")
+        ? classeBotaoConfirmar
+        : `btn ${classeBotaoConfirmar}`;
 
     return (
         <div className="modal-overlay" onClick={fechar}>
@@ -41,14 +46,25 @@ function ModalConfirmacao({
                 <div className="d-flex justify-content-center gap-3 mt-4">
                     <button
                         className="btn btn-cancelar d-flex align-items-center px-4"
-                        onClick={fechar}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            fechar();
+                        }}
+                        type="button"
                     >
                         <FaTimes className="me-2" /> Cancelar
                     </button>
 
                     <button
-                        className={`${classeBotaoConfirmar} d-flex align-items-center px-4`}
-                        onClick={aoConfirmar}
+                        className={`${classeConfirmarFinal} d-flex align-items-center px-4`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (aoConfirmar) {
+                                aoConfirmar();
+                            }
+                        }}
+                        disabled={desabilitarConfirmar}
+                        type="button"
                     >
                         {iconeBotaoConfirmar} {textoBotaoConfirmar}
                     </button>

@@ -27,19 +27,23 @@ function Tecnicos() {
     const [mostrarInativos, setMostrarInativos] = useState(false);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
+    const [carregando, setCarregando] = useState(true);
 
     // Estados do Modal de Exclusão
     const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [idExcluir, setIdExcluir] = useState(null);
+    const [processandoExclusao, setProcessandoExclusao] = useState(false);
 
     // Novos Estados do Modal de Reativação
     const [mostrarConfirmacaoReativar, setMostrarConfirmacaoReativar] = useState(false);
     const [idReativar, setIdReativar] = useState(null);
+    const [processandoReativacao, setProcessandoReativacao] = useState(false);
 
     const ativos = tecnicos.filter((tecnico) => tecnico.ativo).length;
     const inativos = tecnicos.filter((tecnico) => !tecnico.ativo).length;
 
     const carregarTecnicos = useCallback(async () => {
+        setCarregando(true);
         try {
             const response = await listarTecnicos(mostrarInativos, paginaAtual);
             setTecnicos(response.data.content || response.data);
@@ -48,6 +52,9 @@ function Tecnicos() {
             }
         } catch (error) {
             console.error(error);
+            mostrarMensagem("Erro ao carregar técnicos.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }, [mostrarInativos, paginaAtual]);
 
@@ -57,9 +64,10 @@ function Tecnicos() {
     }, [paginaAtual, mostrarInativos]);
 
     async function handlePesquisar() {
+        setCarregando(true);
         if (nomeBusca.trim() === "") {
             setPaginaAtual(0);
-            carregarTecnicos();
+            await carregarTecnicos();
             return;
         }
         try {
@@ -73,6 +81,8 @@ function Tecnicos() {
             }
         } catch (error) {
             mostrarMensagem("Erro ao pesquisar técnicos.", "danger");
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -116,19 +126,22 @@ function Tecnicos() {
     }
 
     async function confirmarExclusao() {
+        setProcessandoExclusao(true);
         try {
             await excluirTecnico(idExcluir);
             mostrarMensagem("Técnico desativado com sucesso!", "warning");
-            carregarTecnicos();
+            await carregarTecnicos();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao desativar técnico!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setMostrarConfirmacao(false);
+            setIdExcluir(null);
+            setProcessandoExclusao(false);
         }
-        setMostrarConfirmacao(false);
-        setIdExcluir(null);
     }
 
     // Ações de Reativação
@@ -138,19 +151,22 @@ function Tecnicos() {
     }
 
     async function confirmarReativacao() {
+        setProcessandoReativacao(true);
         try {
             await reativarTecnico(idReativar);
             mostrarMensagem("Técnico reativado com sucesso!", "success");
-            carregarTecnicos();
+            await carregarTecnicos();
         } catch (error) {
             const mensagem =
                 error.response?.data?.message ||
                 error.response?.data?.erro ||
                 "Erro ao reativar técnico!";
             mostrarMensagem(mensagem, "danger");
+        } finally {
+            setMostrarConfirmacaoReativar(false);
+            setIdReativar(null);
+            setProcessandoReativacao(false);
         }
-        setMostrarConfirmacaoReativar(false); // Fecha o modal
-        setIdReativar(null);
     }
 
     function handleEditarTecnico(tecnico) {
@@ -236,12 +252,19 @@ function Tecnicos() {
                     </div>
                 </div>
 
-                <TabelaTecnico 
-                    dados={tecnicos} 
-                    aoExcluir={handleExcluirTecnico} 
-                    aoEditar={handleEditarTecnico} 
-                    aoReativar={handleReativarTecnicoClicado} // Passamos a função que abre o modal
-                />
+                {carregando ? (
+                    <div className="text-center py-5 text-light">
+                        <div className="spinner-border text-info mb-3" role="status" />
+                        <div>Carregando técnicos...</div>
+                    </div>
+                ) : (
+                    <TabelaTecnico 
+                        dados={tecnicos} 
+                        aoExcluir={handleExcluirTecnico} 
+                        aoEditar={handleEditarTecnico} 
+                        aoReativar={handleReativarTecnicoClicado}
+                    />
+                )}
 
                 {totalPaginas > 1 && (
                     <nav className="d-flex justify-content-center mt-4">
@@ -278,6 +301,10 @@ function Tecnicos() {
                     aoConfirmar={confirmarExclusao}
                     titulo="Confirmar Exclusão"
                     mensagem="Tem certeza que deseja desativar este técnico?" 
+                    textoBotaoConfirmar={processandoExclusao ? "Desativando..." : "Confirmar"}
+                    iconeBotaoConfirmar={processandoExclusao ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" /> : null}
+                    classeBotaoConfirmar={processandoExclusao ? "btn btn-danger disabled" : "btn btn-danger"}
+                    desabilitarConfirmar={processandoExclusao}
                 />
 
                 {/* NOVO Modal de Reativação COM AS PROPS NOVAS IGUAL USUARIOS */}
@@ -287,9 +314,10 @@ function Tecnicos() {
                     aoConfirmar={confirmarReativacao}
                     titulo="Confirmar Reativação"
                     mensagem="Tem certeza que deseja reativar o acesso deste técnico?" 
-                    textoBotaoConfirmar="Reativar"
-                    iconeBotaoConfirmar={<FaUndo className="me-2" />}
-                    classeBotaoConfirmar="btn btn-success"
+                    textoBotaoConfirmar={processandoReativacao ? "Reativando..." : "Reativar"}
+                    iconeBotaoConfirmar={processandoReativacao ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" /> : <FaUndo className="me-2" />}
+                    classeBotaoConfirmar={processandoReativacao ? "btn btn-atendimento disabled" : "btn btn-atendimento"}
+                    desabilitarConfirmar={processandoReativacao}
                 />
             </main>
             <Footer />
