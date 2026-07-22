@@ -118,7 +118,8 @@ function ModalAtendimento({
                                 <div className="d-flex align-items-center gap-2 mt-3">
                                     <FaCalendarAlt className="text-cyan" />
                                     <span className="texto-ajuda m-0">
-                                        {new Date(atendimento.dataAtendimento).toLocaleString("pt-BR", {
+                                        {new Date(typeof atendimento.dataAtendimento === 'string' && !atendimento.dataAtendimento.endsWith('Z') ? atendimento.dataAtendimento + 'Z' : atendimento.dataAtendimento).toLocaleString("pt-BR", {
+                                            timeZone: "America/Sao_Paulo",
                                             day: "2-digit", month: "2-digit", year: "numeric",
                                             hour: "2-digit", minute: "2-digit"
                                         })}

@@ -164,7 +164,8 @@ function ModalComentarios({ mostrar, fechar, chamado, mostrarMensagem }) {
 
                                             <div className="d-flex align-items-center gap-2">
                                                 <small style={{ color: "#A09EBD", fontSize: "0.75rem" }}>
-                                                    {new Date(comentario.dataComentario).toLocaleString("pt-BR", {
+                                                    {new Date(typeof comentario.dataComentario === 'string' && !comentario.dataComentario.endsWith('Z') ? comentario.dataComentario + 'Z' : comentario.dataComentario).toLocaleString("pt-BR", {
+                                                        timeZone: "America/Sao_Paulo",
                                                         day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
                                                     })}
                                                 </small>

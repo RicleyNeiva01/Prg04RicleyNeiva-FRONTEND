@@ -62,7 +62,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
     function validarFormulario() {
         const novosErros = {};
-        
+
         if (!dadosFormulario.nome.trim()) {
             novosErros.nome = "O nome é obrigatório.";
         } else if (dadosFormulario.nome.trim().length < 3) {
@@ -96,7 +96,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                 novosErros.senha = "A senha deve possuir pelo menos 6 caracteres.";
             }
         }
-        
+
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
     }
@@ -110,9 +110,9 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
             const usuarioEnviar = { ...dadosFormulario };
             usuarioEnviar.cpf = usuarioEnviar.cpf.replace(/\D/g, "");
             usuarioEnviar.telefone = usuarioEnviar.telefone.replace(/\D/g, "");
-            
+
             if (usuarioEnviar.senha.trim() === "") delete usuarioEnviar.senha;
-            
+
             await aoSalvar(usuarioEnviar);
         } catch (error) {
             console.error("Erro ao salvar usuário:", error);
@@ -123,7 +123,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
 
     return (
         <form className="form-modal text-start" onSubmit={handleSubmit}>
-            
+
             {/* Primeira Linha: Nome e CPF */}
             <div className="row">
                 <div className="col-md-6 mb-3">
@@ -219,10 +219,16 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                         name="perfil"
                         value={dadosFormulario.perfil}
                         onChange={handleChange}
+                        disabled={dadosFormulario.perfil === "TECNICO"}
                     >
-                        <option value="USUARIO_COMUM">Usuário Comum</option>
-                        <option value="TECNICO">Técnico</option>
-                        <option value="ADMIN">Administrador</option>
+                        {dadosFormulario.perfil === "TECNICO" ? (
+                            <option value="TECNICO">Técnico</option>
+                        ) : (
+                            <>
+                                <option value="USUARIO_COMUM">Usuário Comum</option>
+                                <option value="ADMIN">Administrador</option>
+                            </>
+                        )}
                     </select>
                 </div>
             </div>
@@ -232,7 +238,7 @@ function FormularioUsuario({ fechar, aoSalvar, usuario }) {
                 <button type="button" className="btn btn-cancelar d-flex align-items-center justify-content-center" onClick={fechar} disabled={salvando}>
                     <FaTimes className="me-2" /> Cancelar
                 </button>
-                
+
                 <button type="submit" className="btn btn-custom d-flex align-items-center justify-content-center" disabled={salvando}>
                     {salvando ? (
                         <>
