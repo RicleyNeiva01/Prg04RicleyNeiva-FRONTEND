@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaTrashAlt, FaTools, FaInbox, FaUndo, FaUserCog, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaInbox, FaUndo, FaUserCog, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 function TabelaTecnico({ dados, aoExcluir, aoEditar, aoReativar }) {
     const totalTecnicos = dados?.length || 0;
