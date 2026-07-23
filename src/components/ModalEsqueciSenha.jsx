@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaEnvelope, FaKey, FaLock, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaKey, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 
 function ModalEsqueciSenha({ mostrar, fechar, mostrarMensagem }) {
     const [etapa, setEtapa] = useState(1); // 1 = Digitar E-mail | 2 = Digitar Código e Nova Senha
