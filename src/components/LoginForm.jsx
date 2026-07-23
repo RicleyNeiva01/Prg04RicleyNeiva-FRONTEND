@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaUserAlt, FaLock, FaTools } from "react-icons/fa";
 import api from "../services/api";
 import ToastMensagem from "./ToastMensagem";
+import ModalEsqueciSenha from "./ModalEsqueciSenha";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -12,6 +13,8 @@ function LoginForm() {
     const [carregando, setCarregando] = useState(false);
     const [toast, setToast] = useState({ mostrar: false, mensagem: "", tipo: "" });
     const navigate = useNavigate();
+
+    const [mostrarModalSenha, setMostrarModalSenha] = useState(false);
 
     function exibirToast(mensagem, tipo) {
         setToast({ mostrar: true, mensagem, tipo });
@@ -56,9 +59,15 @@ function LoginForm() {
         <>
             <ToastMensagem mostrar={toast.mostrar} mensagem={toast.mensagem} tipo={toast.tipo} />
 
+            <ModalEsqueciSenha
+                mostrar={mostrarModalSenha}
+                fechar={() => setMostrarModalSenha(false)}
+                mostrarMensagem={exibirToast}
+            />
+
             {/* Início do Card de Vidro (flutuando sobre o fundo principal) */}
             <div className="login-glass-card mx-auto w-100" style={{ maxWidth: "420px" }}>
-                
+
                 {/* Logo e Título (Trouxemos o título de fora para dentro do card) */}
                 <div className="mb-4 text-center">
                     <FaTools style={{ fontSize: "2.5rem", color: "#05BBD0", marginBottom: "10px" }} />
@@ -122,6 +131,17 @@ function LoginForm() {
                             </button>
                         </div>
                         {erros.senha && <small className="text-danger mt-1 d-block fw-bold">{erros.senha}</small>}
+                    </div>
+
+                    <div className="text-end mb-3">
+                        <button
+                            type="button"
+                            className="btn btn-link p-0 text-info text-decoration-none"
+                            style={{ fontSize: "0.85rem" }}
+                            onClick={() => setMostrarModalSenha(true)}
+                        >
+                            Esqueceu sua senha?
+                        </button>
                     </div>
 
                     {/* Botão de Submit (btn-login customizado) */}

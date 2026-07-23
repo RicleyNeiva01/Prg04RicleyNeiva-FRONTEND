@@ -119,7 +119,7 @@ function Painel() {
                             <FaChartPie style={{ color: "var(--ciano)" }} /> Dashboard
                         </h2>
                         <p className="subtitulo-pagina mb-0 fs-5">
-                            Olá, <strong style={{ color: "var(--ciano)" }}>{usuario?.nome}</strong>! Bem-vindo ao painel do DeskFlow.
+                            Olá, <strong style={{ color: "var(--ciano)" }}>{usuario?.nome}</strong>! Bem-vindo(a) ao painel do DeskFlow.
                         </p>
                     </div>
                 </div>
