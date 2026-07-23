@@ -11,7 +11,7 @@ function ModalEsqueciSenha({ mostrar, fechar, mostrarMensagem }) {
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
     // Ajuste a URL base se necessário (se já tiver um axios configurado, use-o)
-    const apiUrl = "http://localhost:8080/auth";
+    const apiUrl = "https://prg04ricleyneiva-backend-production.up.railway.app/auth";
 
     if (!mostrar) return null;
 
